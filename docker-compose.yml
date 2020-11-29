@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  publishingcompany.api:
+    image: ${DOCKER_REGISTRY-}publishingcompanyapi
+    build:
+      context: .
+      dockerfile: PublishingCompany/Dockerfile
+
+  paymentmanager.geteway:
+    image: ${DOCKER_REGISTRY-}paymentmanagergateway
+    build:
+      context: .
+      dockerfile: PaymentManager.Gateway/Dockerfile
+
+  paypal.service:
+    image: ${DOCKER_REGISTRY-}paypalservice
+    build:
+      context: .
+      dockerfile: PayPal.Service/Dockerfile
+
+  bitcoin.service:
+    image: ${DOCKER_REGISTRY-}bitcoinservice
+    build:
+      context: .
+      dockerfile: BitCoin.Service/Dockerfile
+
+  paymentcard.service:
+    image: ${DOCKER_REGISTRY-}paymentcardservice
+    build:
+      context: .
+      dockerfile: PaymentCard.Service/Dockerfile
+
+  identity.service:
+    image: ${DOCKER_REGISTRY-}identityservice
+    build:
+      context: .
+      dockerfile: Identity.Service/Dockerfile
+
+  bookmanagement.service:
+    image: ${DOCKER_REGISTRY-}bookmanagementservice
+    build:
+      context: .
+      dockerfile: BookManagement.Service/Dockerfile
+
+  consul:
+    image: consul:latest
+    command: consul agent -dev -log-level+warn -ui -client=0.0.0.0
+    hostname: consul
+    container_name: consul
