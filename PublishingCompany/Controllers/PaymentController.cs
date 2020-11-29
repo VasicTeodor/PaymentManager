@@ -40,5 +40,21 @@ namespace PublishingCompany.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("GetBitcoin")]
+        public async Task<IActionResult> GetBitcoin()
+        {
+            var result = await _restClient.Get<String>($"{_paymentManagerUrl}bitcoin/bitcoin");
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetBitcoinValue")]
+        public async Task<IActionResult> GetBitcoinValue(string value)
+        {
+            var result = await _restClient.Get<String>($"{_paymentManagerUrl}bitcoin/bitcoin/getbyid?id={value}");
+            return Ok(result);
+        }
+
     }
 }

@@ -17,7 +17,16 @@ namespace BitCoin.Service.Controllers
         {
             var port = Request.Host.Port;
 
-            return new string[] { "value1", "value2", port.Value.ToString() };
+            return Ok(String.Join(", ", new string[] { "Payment via Bitcoin", "Bitcoin.Service", port.Value.ToString() }));
+        }
+
+        [HttpGet]
+        [Route("GetById")]
+        public ActionResult<IEnumerable<string>> GetById(string id)
+        {
+            var port = Request.Host.Port;
+
+            return Ok(String.Join(", ", new string[] { "Payment via Bitcoin", "Bitcoin.Service", $"ID received {id}", port.Value.ToString() }));
         }
     }
 }

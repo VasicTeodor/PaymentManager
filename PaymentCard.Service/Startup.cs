@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
+using Infrastructure.Service.Interface;
+using Infrastructure.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RestSharp;
 
 namespace PaymentCard.Service
 {
@@ -31,6 +34,10 @@ namespace PaymentCard.Service
             services.AddControllers();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+
+            // Register Services
+            services.AddScoped<IRestClient, RestClient>();
+            services.AddScoped<IGenericRestClient, GenericRestClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
