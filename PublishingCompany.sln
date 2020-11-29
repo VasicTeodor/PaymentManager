@@ -17,19 +17,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentCard.Service", "Paym
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookManagement.Service", "BookManagement.Service\BookManagement.Service.csproj", "{CC9AC9DD-C0B7-4041-B7B2-B31BA83F80FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Service", "Identity.Service\Identity.Service.csproj", "{AD7A8DCC-ABC7-4D5D-A55A-677EAF2D1619}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Service", "Identity.Service\Identity.Service.csproj", "{AD7A8DCC-ABC7-4D5D-A55A-677EAF2D1619}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{BB51D2EA-1C80-4A08-A466-A98F13B6DA90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishingCompany.Components", "PublishingCompany.Components", "{EDEDFA80-DEE9-4872-8B06-CBC04B18247C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublishingCompany.Infrastructure", "PublishingCompany.Infrastructure\PublishingCompany.Infrastructure.csproj", "{989204A7-4048-41BE-86B2-9B9A55D73E0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublishingCompany.Infrastructure", "PublishingCompany.Infrastructure\PublishingCompany.Infrastructure.csproj", "{989204A7-4048-41BE-86B2-9B9A55D73E0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Service", "Infrastructure.Service\Infrastructure.Service.csproj", "{E2920E89-3FAA-4B02-AA9E-9B1E6CB3C517}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Service", "Infrastructure.Service\Infrastructure.Service.csproj", "{E2920E89-3FAA-4B02-AA9E-9B1E6CB3C517}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bank.Service", "Bank.Service\Bank.Service.csproj", "{D5C612BB-179B-49CD-B1C8-6BBBD1673089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bank.Service", "Bank.Service\Bank.Service.csproj", "{D5C612BB-179B-49CD-B1C8-6BBBD1673089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentCardCentre.Service", "PaymentCardCentre.Service\PaymentCardCentre.Service.csproj", "{705C18C0-03B1-4751-89B1-C81B86364320}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentCardCentre.Service", "PaymentCardCentre.Service\PaymentCardCentre.Service.csproj", "{705C18C0-03B1-4751-89B1-C81B86364320}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ethereum.Service", "Ethereum.Service\Ethereum.Service.csproj", "{7CCB03B5-D90F-4F27-8C97-84286E48F976}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{705C18C0-03B1-4751-89B1-C81B86364320}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{705C18C0-03B1-4751-89B1-C81B86364320}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{705C18C0-03B1-4751-89B1-C81B86364320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CCB03B5-D90F-4F27-8C97-84286E48F976}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CCB03B5-D90F-4F27-8C97-84286E48F976}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CCB03B5-D90F-4F27-8C97-84286E48F976}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CCB03B5-D90F-4F27-8C97-84286E48F976}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{E2920E89-3FAA-4B02-AA9E-9B1E6CB3C517} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 		{D5C612BB-179B-49CD-B1C8-6BBBD1673089} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 		{705C18C0-03B1-4751-89B1-C81B86364320} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
+		{7CCB03B5-D90F-4F27-8C97-84286E48F976} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F941125-0732-4D9D-A8D8-D772569B3F82}
