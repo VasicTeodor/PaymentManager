@@ -17,7 +17,7 @@ namespace Ethereum.Service.Controllers
         {
             var port = Request.Host.Port;
 
-            return new string[] { "value1", "value2", port.Value.ToString() };
+            return Ok(String.Join(", ", new string[] { "Ethereum", "Ethereum.Service", port.Value.ToString() }));
         }
     }
 }

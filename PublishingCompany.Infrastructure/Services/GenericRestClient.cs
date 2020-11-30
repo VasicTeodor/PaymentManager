@@ -68,7 +68,7 @@ namespace PublishingCompany.Infrastructure.Services
         /// </summary>
         /// <param name="apiUrl">API Url</param>
         /// <param name="putObject">The object to be edited</param>
-        public async Task<T> PutRequest<T>(string apiUrl, T putObject)
+        public async Task<T> PutRequest<T>(string apiUrl, T putObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.POST)
             {
@@ -76,6 +76,39 @@ namespace PublishingCompany.Infrastructure.Services
             };
 
             request.AddJsonBody(putObject);
+
+            var response = await _restClient.ExecuteAsync<T>(request).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.Accepted)
+            {
+                return response.Data;
+            }
+
+            throw new Exception("Api request failed");
+        }
+
+        public async Task<T> DeleteRequest<T>(string apiUrl) where T : class
+        {
+            var request = new RestRequest($"{apiUrl}", Method.DELETE);
+
+            var response = await _restClient.ExecuteAsync<T>(request).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return response.Data;
+            }
+
+            throw new Exception("Api request failed");
+        }
+
+        public async Task<T> PatchRequest<T>(string apiUrl, T patchObject) where T : class
+        {
+            var request = new RestRequest($"{apiUrl}", Method.PATCH)
+            {
+                RequestFormat = DataFormat.Json
+            };
+
+            request.AddJsonBody(patchObject);
 
             var response = await _restClient.ExecuteAsync<T>(request).ConfigureAwait(false);
 

@@ -56,5 +56,21 @@ namespace PublishingCompany.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("GetPaymentCard")]
+        public async Task<IActionResult> GetPaymentCard()
+        {
+            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paymentcard/paymentCard");
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetPaymentCardValue")]
+        public async Task<IActionResult> GetPaymentCardValue(string value)
+        {
+            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paymentcard/paymentCard/getbyid?id={value}");
+            return Ok(result);
+        }
+
     }
 }

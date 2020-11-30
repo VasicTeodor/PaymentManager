@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PaymentCard.Service.Controllers
@@ -13,7 +14,16 @@ namespace PaymentCard.Service.Controllers
         {
             var port = Request.Host.Port;
 
-            return new string[] { "value1", "value2", port.Value.ToString() };
+            return Ok(String.Join(", ", new string[] { "Payment via PaymentCard", "PaymentCard.Service", port.Value.ToString() }));
+        }
+
+        [HttpGet]
+        [Route("GetById")]
+        public ActionResult<IEnumerable<string>> GetById(string id)
+        {
+            var port = Request.Host.Port;
+
+            return Ok(String.Join(", ", new string[] { "Payment via PaymentCard", "PaymentCard.Service", $"ID received {id}", port.Value.ToString() }));
         }
     }
 }
