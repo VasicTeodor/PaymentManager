@@ -10,7 +10,7 @@ using PaymentManager.Api.Data;
 namespace PaymentManager.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201208213930_InitialMigration")]
+    [Migration("20201210222832_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,17 +119,17 @@ namespace PaymentManager.Api.Migrations
                     b.Property<string>("MerchantUniqueId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PaymentManagerConsumerAppId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<byte[]>("TableVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<Guid?>("WebStoreId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentManagerConsumerAppId");
+                    b.HasIndex("WebStoreId");
 
                     b.ToTable("Merchants");
                 });
@@ -154,12 +154,7 @@ namespace PaymentManager.Api.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("WebStoreId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WebStoreId");
 
                     b.ToTable("PaymentServices");
                 });
@@ -310,26 +305,6 @@ namespace PaymentManager.Api.Migrations
                     b.ToTable("WebStores");
                 });
 
-            modelBuilder.Entity("PaymentManager.Api.Data.Entities.WebStoreMerchant", b =>
-                {
-                    b.Property<Guid>("WebStoreId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MerchantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("TableVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("WebStoreId", "MerchantId");
-
-                    b.HasIndex("MerchantId");
-
-                    b.ToTable("WebStoreMerchants");
-                });
-
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.WebStorePaymentService", b =>
                 {
                     b.Property<Guid>("PaymentServiceId")
@@ -388,15 +363,8 @@ namespace PaymentManager.Api.Migrations
 
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.Merchant", b =>
                 {
-                    b.HasOne("PaymentManager.Api.Data.Entities.WebStore", "PaymentManagerConsumerApp")
+                    b.HasOne("PaymentManager.Api.Data.Entities.WebStore", "WebStore")
                         .WithMany("Merchants")
-                        .HasForeignKey("PaymentManagerConsumerAppId");
-                });
-
-            modelBuilder.Entity("PaymentManager.Api.Data.Entities.PaymentService", b =>
-                {
-                    b.HasOne("PaymentManager.Api.Data.Entities.WebStore", null)
-                        .WithMany("PaymentOptions")
                         .HasForeignKey("WebStoreId");
                 });
 
@@ -415,31 +383,16 @@ namespace PaymentManager.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PaymentManager.Api.Data.Entities.WebStoreMerchant", b =>
-                {
-                    b.HasOne("PaymentManager.Api.Data.Entities.Merchant", "Merchant")
-                        .WithMany()
-                        .HasForeignKey("MerchantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PaymentManager.Api.Data.Entities.WebStore", "WebStore")
-                        .WithMany()
-                        .HasForeignKey("WebStoreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.WebStorePaymentService", b =>
                 {
                     b.HasOne("PaymentManager.Api.Data.Entities.PaymentService", "PaymentService")
-                        .WithMany()
+                        .WithMany("WebStores")
                         .HasForeignKey("PaymentServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PaymentManager.Api.Data.Entities.WebStore", "WebStore")
-                        .WithMany()
+                        .WithMany("PaymentOptions")
                         .HasForeignKey("WebStoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

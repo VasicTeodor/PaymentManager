@@ -49,6 +49,21 @@ namespace PaymentManager.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentServices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Url = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentServices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WebStores",
                 columns: table => new
                 {
@@ -176,7 +191,7 @@ namespace PaymentManager.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    PaymentManagerConsumerAppId = table.Column<Guid>(nullable: true),
+                    WebStoreId = table.Column<Guid>(nullable: true),
                     MerchantPassword = table.Column<string>(nullable: true),
                     MerchantUniqueId = table.Column<string>(nullable: true),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
@@ -185,58 +200,11 @@ namespace PaymentManager.Api.Migrations
                 {
                     table.PrimaryKey("PK_Merchants", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Merchants_WebStores_PaymentManagerConsumerAppId",
-                        column: x => x.PaymentManagerConsumerAppId,
-                        principalTable: "WebStores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentServices",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Url = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    WebStoreId = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentServices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PaymentServices_WebStores_WebStoreId",
+                        name: "FK_Merchants_WebStores_WebStoreId",
                         column: x => x.WebStoreId,
                         principalTable: "WebStores",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "WebStoreMerchants",
-                columns: table => new
-                {
-                    WebStoreId = table.Column<Guid>(nullable: false),
-                    MerchantId = table.Column<Guid>(nullable: false),
-                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WebStoreMerchants", x => new { x.WebStoreId, x.MerchantId });
-                    table.ForeignKey(
-                        name: "FK_WebStoreMerchants_Merchants_MerchantId",
-                        column: x => x.MerchantId,
-                        principalTable: "Merchants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_WebStoreMerchants_WebStores_WebStoreId",
-                        column: x => x.WebStoreId,
-                        principalTable: "WebStores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -304,19 +272,9 @@ namespace PaymentManager.Api.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Merchants_PaymentManagerConsumerAppId",
+                name: "IX_Merchants_WebStoreId",
                 table: "Merchants",
-                column: "PaymentManagerConsumerAppId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PaymentServices_WebStoreId",
-                table: "PaymentServices",
                 column: "WebStoreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WebStoreMerchants_MerchantId",
-                table: "WebStoreMerchants",
-                column: "MerchantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WebStorePaymentServices_WebStoreId",
@@ -342,7 +300,7 @@ namespace PaymentManager.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "WebStoreMerchants");
+                name: "Merchants");
 
             migrationBuilder.DropTable(
                 name: "WebStorePaymentServices");
@@ -352,9 +310,6 @@ namespace PaymentManager.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Merchants");
 
             migrationBuilder.DropTable(
                 name: "PaymentServices");

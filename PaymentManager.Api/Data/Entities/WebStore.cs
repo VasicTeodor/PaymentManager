@@ -12,7 +12,7 @@ namespace PaymentManager.Api.Data.Entities
         public string FailureUrl { get; set; }
         public string Url { get; set; }
         public bool SingleMerchantStore { get; set; }
-        public ICollection<PaymentService> PaymentOptions { get; set; }
+        public ICollection<WebStorePaymentService> PaymentOptions { get; set; }
         public ICollection<Merchant> Merchants { get; set; }
         [Timestamp]
         public byte[] TableVersion { get; set; }

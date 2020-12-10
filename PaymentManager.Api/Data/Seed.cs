@@ -97,16 +97,16 @@ namespace PaymentManager.Api.Data
                 SuccessUrl = "http://localhost:3000/paymentsuccess",
                 SingleMerchantStore = true,
                 Url = "http://localhost:3000/home",
-                PaymentOptions = new List<PaymentService>()
+                PaymentOptions = new List<WebStorePaymentService>()
             };
 
             var bitCoin = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "BitCoin");
             var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
             var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
 
-            webStore.PaymentOptions.Add(bitCoin);
-            webStore.PaymentOptions.Add(bank);
-            webStore.PaymentOptions.Add(payPal);
+            webStore.PaymentOptions.Add(new WebStorePaymentService(){ PaymentService = bitCoin, WebStore = webStore});
+            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, WebStore = webStore });
+            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = payPal, WebStore = webStore });
 
             _context.Add(webStore);
 
