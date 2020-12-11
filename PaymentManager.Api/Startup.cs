@@ -77,6 +77,9 @@ namespace PaymentManager.Api
             services.AddScoped<IWebStoreRepository, WebStoreRepository>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();
 
+            // Register Seed Class
+            services.AddTransient<Seed>();
+
             // Register Mapper
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -87,8 +90,14 @@ namespace PaymentManager.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seed)
         {
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+                context.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -106,6 +115,10 @@ namespace PaymentManager.Api
             {
                 endpoints.MapControllers();
             });
+
+            seed.SeedUsers();
+            seed.SeedPaymentServices();
+            seed.SeedWebStore();
 
             app.UseHealthChecks("/paymentmanagerapi/checks/health", new HealthCheckOptions()
             {

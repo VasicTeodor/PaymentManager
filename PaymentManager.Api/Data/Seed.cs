@@ -104,9 +104,16 @@ namespace PaymentManager.Api.Data
             var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
             var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
 
-            webStore.PaymentOptions.Add(new WebStorePaymentService(){ PaymentService = bitCoin, WebStore = webStore});
-            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, WebStore = webStore });
-            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = payPal, WebStore = webStore });
+            webStore.PaymentOptions.Add(new WebStorePaymentService(){ PaymentService = bitCoin, PaymentServiceId = bitCoin.Id, WebStore = webStore});
+            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, PaymentServiceId = bank.Id, WebStore = webStore });
+            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = payPal, PaymentServiceId = payPal.Id, WebStore = webStore });
+
+            var merchant = new Merchant
+            {
+                WebStore = webStore,
+                MerchantUniqueId = "UniqueMerchantId123",
+                MerchantPassword = "UniqueMerchantPassword@123"
+            };
 
             _context.Add(webStore);
 
