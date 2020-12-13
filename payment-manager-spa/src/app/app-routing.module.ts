@@ -4,6 +4,7 @@ import { LoginComponent } from './_components/login/login.component';
 import { PaymentServiceComponent } from './_components/payment-service/payment-service.component';
 import { SideMenuComponent } from './_components/side-menu/side-menu.component';
 import { WebShopComponent } from './_components/web-shop/web-shop.component';
+import { PaymentServicesResolver } from './_resolvers/payment-services.resolver';
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
       {
         path: 'paymentservice',
         component: PaymentServiceComponent,
+        resolve: {paymentServices: PaymentServicesResolver},
         outlet: 'sidemenu'
       }
     ]},

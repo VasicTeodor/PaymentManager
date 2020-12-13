@@ -14,6 +14,8 @@ import { SideMenuComponent } from './_components/side-menu/side-menu.component';
 import { WebShopComponent } from './_components/web-shop/web-shop.component';
 import { PaymentServiceComponent } from './_components/payment-service/payment-service.component';
 import { PaymentServicesService } from './_services/payment-services/payment-services.service';
+import { PaymentServicesResolver } from './_resolvers/payment-services.resolver';
+import { PaginationComponent } from './_components/pagination/pagination.component';
 
 export function getToken() {
   return localStorage.getItem('token');
@@ -25,7 +27,8 @@ export function getToken() {
     LoginComponent,
     SideMenuComponent,
     WebShopComponent,
-    PaymentServiceComponent
+    PaymentServiceComponent,
+    PaginationComponent
   ],
   imports: [
     JwtModule.forRoot({
@@ -45,7 +48,8 @@ export function getToken() {
   providers: [
     AuthService,
     ToastrService,
-    PaymentServicesService
+    PaymentServicesService,
+    PaymentServicesResolver
   ],
   bootstrap: [AppComponent]
 })

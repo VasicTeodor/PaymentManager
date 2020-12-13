@@ -55,6 +55,19 @@ namespace PaymentManager.Api.Controllers
             return BadRequest();
         }
 
+        [HttpPut]
+        [Route("editpaymentservice")]
+        public async Task<IActionResult> EditPaymentService([FromForm]Guid id, PaymentService newService)
+        {
+            Log.Information("Request to add new payment service");
+            var result = await _repository.AddPaymentService(newService);
+
+            if (result)
+                return Ok(result);
+
+            return BadRequest();
+        }
+
         [HttpDelete]
         [Route("removepaymentservice")]
         public async Task<IActionResult> RemovePaymentService(Guid id)

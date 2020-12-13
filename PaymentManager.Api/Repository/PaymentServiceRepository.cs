@@ -26,7 +26,7 @@ namespace PaymentManager.Api.Repository
 
         public async Task<PaymentService> GetPaymentServiceById(Guid id)
         {
-            return await _context.PaymentServices.Include(ps => ps.WebStores).FirstOrDefaultAsync(ps => ps.Id == id);
+            return await _context.PaymentServices.Include(ps => ps.WebStores).ThenInclude(wps => wps.WebStore).FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
         public async Task<PaginationResult<PaymentService>> GetPaymentServices(int pageNumber = 1, int pageSize = 10)
