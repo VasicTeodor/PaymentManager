@@ -58,66 +58,86 @@ namespace PaymentManager.Api.Data
 
         public void SeedPaymentServices()
         {
-            var payPalService = new PaymentService()
+            if (!_context.PaymentServices.Any())
             {
-                Name = "PayPal",
-                Description = "PayPal service for handling all paypal transactions.",
-                Url = @"https://localhost:5005/paypal/"
-            };
+                var payPalService = new PaymentService()
+                {
+                    Name = "PayPal",
+                    Description = "PayPal service for handling all paypal transactions.",
+                    Url = @"https://localhost:5005/paypal/"
+                };
 
-            _context.Add(payPalService);
+                _context.Add(payPalService);
 
-            var bankService = new PaymentService()
+                var bankService = new PaymentService()
+                {
+                    Name = "PaymentCard",
+                    Description = "Payment service to handle all your payments with payment cards.",
+                    Url = @"https://localhost:5005/bank/"
+                };
+
+                _context.Add(bankService);
+
+                var bitcoinService = new PaymentService()
+                {
+                    Name = "BitCoin",
+                    Description = "Payment service to handle all your crypto currency transactions.",
+                    Url = @"https://localhost:5005/bitcoin/"
+                };
+
+                _context.Add(bitcoinService);
+
+                _context.SaveChanges();
+            }
+        }
+
+        public void SeedMerchant()
+        {
+            if (!_context.Merchants.Any())
             {
-                Name = "PaymentCard",
-                Description = "Payment service to handle all your payments with payment cards.",
-                Url = @"https://localhost:5005/bank/"
-            };
+                var merchant = new Merchant
+                {
+                    MerchantUniqueId = "UniqueMerchantId123",
+                    MerchantPassword = "UniqueMerchantPassword@123"
+                };
 
-            _context.Add(bankService);
+                _context.Add(merchant);
 
-            var bitcoinService = new PaymentService()
-            {
-                Name = "BitCoin",
-                Description = "Payment service to handle all your crypto currency transactions.",
-                Url = @"https://localhost:5005/bitcoin/"
-            };
-
-            _context.Add(bitcoinService);
-
-            _context.SaveChanges();
+                _context.SaveChanges();
+            }
         }
 
         public void SeedWebStore()
         {
-            var webStore = new WebStore()
+            if (!_context.WebStores.Any())
             {
-                ErrorUrl = "http://localhost:3000/paymenterror",
-                FailureUrl = "http://localhost:3000/paymentfailure",
-                SuccessUrl = "http://localhost:3000/paymentsuccess",
-                SingleMerchantStore = true,
-                Url = "http://localhost:3000/home",
-                PaymentOptions = new List<WebStorePaymentService>()
-            };
+                var webStore = new WebStore()
+                {
+                    ErrorUrl = "http://localhost:3000/paymenterror",
+                    FailureUrl = "http://localhost:3000/paymentfailure",
+                    SuccessUrl = "http://localhost:3000/paymentsuccess",
+                    SingleMerchantStore = true,
+                    Url = "http://localhost:3000/home",
+                    PaymentOptions = new List<WebStorePaymentService>()
+                };
 
-            var bitCoin = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "BitCoin");
-            var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
-            var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
+                var bitCoin = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "BitCoin");
+                var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
+                var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
 
-            webStore.PaymentOptions.Add(new WebStorePaymentService(){ PaymentService = bitCoin, PaymentServiceId = bitCoin.Id, WebStore = webStore});
-            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, PaymentServiceId = bank.Id, WebStore = webStore });
-            webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = payPal, PaymentServiceId = payPal.Id, WebStore = webStore });
+                var merchant = _context.Merchants.FirstOrDefault(m => m.MerchantUniqueId == "UniqueMerchantId123");
+                merchant.WebStore = webStore;
 
-            var merchant = new Merchant
-            {
-                WebStore = webStore,
-                MerchantUniqueId = "UniqueMerchantId123",
-                MerchantPassword = "UniqueMerchantPassword@123"
-            };
+                webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bitCoin, PaymentServiceId = bitCoin.Id, WebStore = webStore });
+                webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, PaymentServiceId = bank.Id, WebStore = webStore });
+                webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = payPal, PaymentServiceId = payPal.Id, WebStore = webStore });
 
-            _context.Add(webStore);
+                webStore.Merchants = new List<Merchant>(){merchant};
 
-            _context.SaveChanges();
+                _context.Add(webStore);
+
+                _context.SaveChanges();
+            }
         }
     }
 }

@@ -20,14 +20,14 @@ namespace PaymentManager.Api.Repository
 
         public async Task<PaginationResult<Merchant>> GetMerchants(int pageNumber = 1, int pageSize = 10)
         {
-            var result = new PaginationResult<Merchant>()
+            var result = new PaginationResult<Merchant>
             {
-                NumberOfItems = pageSize,
-                PageNumber = pageNumber
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                NumberOfItems = await _context.Merchants.CountAsync(),
+                Items = await _context.Merchants.Include(m => m.WebStore).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync()
             };
 
-            result.NumberOfItems = await _context.Merchants.CountAsync();
-            result.Items = await _context.Merchants.Skip(pageSize * (pageNumber -1)).Take(pageSize).ToListAsync();
             return result;
         }
 

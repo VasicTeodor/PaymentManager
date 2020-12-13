@@ -31,20 +31,22 @@ namespace PaymentManager.Api.Repository
 
         public async Task<PaginationResult<WebStore>> GetWebStores(int pageNumber = 1, int pageSize = 10)
         {
-            var result = new PaginationResult<WebStore>()
+            var result = new PaginationResult<WebStore>
             {
-                NumberOfItems = pageSize,
-                PageNumber = pageNumber
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                NumberOfItems = await _context.WebStores.CountAsync(),
+                Items = await _context.WebStores.Include(ws => ws.PaymentOptions).Skip(pageSize * (pageNumber - 1))
+                    .Take(pageSize).ToListAsync()
             };
 
-            result.NumberOfItems = await _context.WebStores.CountAsync();
-            result.Items = await _context.WebStores.Include(ws => ws.PaymentOptions).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
             return result;
         }
 
         public async Task<bool> RemoveWebStore(Guid id)
         {
-            var webStoreToRemove = await _context.WebStores.Include(ws => ws.PaymentOptions).FirstOrDefaultAsync(WebStore => WebStore.Id == id);
+            var webStoreToRemove = await _context.WebStores.Include(ws => ws.PaymentOptions)
+                .Include(ws => ws.Merchants).FirstOrDefaultAsync(WebStore => WebStore.Id == id);
             _context.WebStores.Remove(webStoreToRemove);
 
             return await _context.SaveChangesAsync() > 0;

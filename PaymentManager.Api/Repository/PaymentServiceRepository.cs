@@ -26,19 +26,20 @@ namespace PaymentManager.Api.Repository
 
         public async Task<PaymentService> GetPaymentServiceById(Guid id)
         {
-            return await _context.PaymentServices.FirstOrDefaultAsync(ps => ps.Id == id);
+            return await _context.PaymentServices.Include(ps => ps.WebStores).FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
         public async Task<PaginationResult<PaymentService>> GetPaymentServices(int pageNumber = 1, int pageSize = 10)
         {
-            var result = new PaginationResult<PaymentService>()
+            var result = new PaginationResult<PaymentService>
             {
-                NumberOfItems = pageSize,
-                PageNumber = pageNumber
+                PageSize = pageSize,
+                PageNumber = pageNumber,
+                NumberOfItems = await _context.PaymentServices.CountAsync(),
+                Items = await _context.PaymentServices.Skip(pageSize * (pageNumber - 1)).Take(pageSize)
+                    .ToListAsync()
             };
 
-            result.NumberOfItems = await _context.PaymentServices.CountAsync();
-            result.Items = await _context.PaymentServices.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
             return result;
         }
 

@@ -1,0 +1,13 @@
+
+<div>
+  <h1 class="app-name">Payment Manager</h1>
+  <div>
+    <form #loginForm="ngForm" (ngSubmit)="login()" class="form-signin">
+      <span id="reauth-email" class="reauth-email"></span>
+      <input type="email" name="email" id="inputEmail" class="form-input" placeholder="Email address" required autofocus [(ngModel)]="model.email">
+      <input type="password" name="password" id="inputPassword" class="form-input" placeholder="Password" required [(ngModel)]="model.password">
+      <br>
+      <button [disabled]="!loginForm.valid" class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+  </form>
+  </div>
+</div>

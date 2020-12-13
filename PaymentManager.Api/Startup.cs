@@ -66,9 +66,21 @@ namespace PaymentManager.Api
                 };
             });
 
-            services.AddControllers();
+            // Health Checks
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+
+            // CORS Policy
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "https://www.sandbox.paypal.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
 
             // Register Services and Repositories
             services.AddScoped<IRestClient, RestClient>();
@@ -107,6 +119,8 @@ namespace PaymentManager.Api
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
 
             app.UseAuthorization();
@@ -116,6 +130,7 @@ namespace PaymentManager.Api
                 endpoints.MapControllers();
             });
 
+            seed.SeedMerchant();
             seed.SeedUsers();
             seed.SeedPaymentServices();
             seed.SeedWebStore();
