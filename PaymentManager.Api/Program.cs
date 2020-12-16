@@ -19,6 +19,7 @@ namespace PaymentManager.Api
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
+                .WriteTo.Console()
                 .WriteTo.File(@"Logs\PaymentManagerApi.log")
                 .CreateLogger();
 

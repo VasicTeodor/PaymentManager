@@ -64,6 +64,24 @@ namespace PaymentManager.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    MerchantOrderId = table.Column<Guid>(nullable: false),
+                    AcquirerOrderId = table.Column<Guid>(nullable: false),
+                    AcquirerTimeStamp = table.Column<DateTime>(nullable: false),
+                    PaymentId = table.Column<Guid>(nullable: false),
+                    Status = table.Column<string>(nullable: true),
+                    Amount = table.Column<decimal>(nullable: false),
+                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WebStores",
                 columns: table => new
                 {
@@ -301,6 +319,9 @@ namespace PaymentManager.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Merchants");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "WebStorePaymentServices");

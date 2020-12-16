@@ -19,6 +19,7 @@ using PaymentManager.Api.Repository.Interfaces;
 using PaymentManager.Api.Services;
 using PaymentManager.Api.Services.Interfaces;
 using RestSharp;
+using PaymentService = PaymentManager.Api.Data.Entities.PaymentService;
 
 namespace PaymentManager.Api
 {
@@ -88,6 +89,7 @@ namespace PaymentManager.Api
             services.AddScoped<IPaymentServiceRepository, PaymentServiceRepository>();
             services.AddScoped<IWebStoreRepository, WebStoreRepository>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();
+            services.AddScoped<IPaymentService, Services.PaymentService>();
 
             // Register Seed Class
             services.AddTransient<Seed>();

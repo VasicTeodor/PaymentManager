@@ -44,7 +44,7 @@ namespace PaymentManager.Api.Services
         /// <param name="apiUrl">API Url</param>
         /// <param name="postObject">The object to be created</param>
         /// <returns>A Task with created item</returns>
-        public async Task<T> PostRequest<T>(string apiUrl, T postObject) where T : class
+        public async Task<T> PostRequest<T>(string apiUrl, object postObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.POST)
             {
@@ -68,7 +68,7 @@ namespace PaymentManager.Api.Services
         /// </summary>
         /// <param name="apiUrl">API Url</param>
         /// <param name="putObject">The object to be edited</param>
-        public async Task<T> PutRequest<T>(string apiUrl, T putObject) where T : class
+        public async Task<T> PutRequest<T>(string apiUrl, object putObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.POST)
             {
@@ -101,7 +101,7 @@ namespace PaymentManager.Api.Services
             throw new Exception("Api request failed");
         }
 
-        public async Task<T> PatchRequest<T>(string apiUrl, T patchObject) where T : class
+        public async Task<T> PatchRequest<T>(string apiUrl, object patchObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.PATCH)
             {

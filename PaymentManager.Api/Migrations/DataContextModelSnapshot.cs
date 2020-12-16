@@ -185,6 +185,40 @@ namespace PaymentManager.Api.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("PaymentManager.Api.Data.Entities.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AcquirerOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AcquirerTimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("MerchantOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PaymentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("TableVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Transactions");
+                });
+
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")

@@ -18,9 +18,9 @@ namespace PaymentManager.Api.Repository
             _context = context;
         }
 
-        public async Task<bool> AddWebStore(WebStore merchant)
+        public async Task<bool> AddWebStore(WebStore webStore)
         {
-            await _context.WebStores.AddAsync(merchant);
+            await _context.WebStores.AddAsync(webStore);
             return await _context.SaveChangesAsync() > 0;
         }
 

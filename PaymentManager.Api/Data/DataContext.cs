@@ -13,6 +13,7 @@ namespace PaymentManager.Api.Data
         public DbSet<PaymentService> PaymentServices { get; set; }
         public DbSet<WebStore> WebStores { get; set; }
         public DbSet<Merchant> Merchants { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<WebStorePaymentService> WebStorePaymentServices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using PaymentManager.Api.Data.Entities;
@@ -57,10 +53,10 @@ namespace PaymentManager.Api.Controllers
 
         [HttpPut]
         [Route("editpaymentservice")]
-        public async Task<IActionResult> EditPaymentService([FromForm]Guid id, PaymentService newService)
+        public async Task<IActionResult> EditPaymentService([FromQuery]Guid id, PaymentService newService)
         {
-            Log.Information("Request to add new payment service");
-            var result = await _repository.AddPaymentService(newService);
+            Log.Information("Request to edit existing payment service");
+            var result = await _repository.UpdatePaymentService(id, newService);
 
             if (result)
                 return Ok(result);
