@@ -1,0 +1,14 @@
+<div *ngIf="totalItems > pageSize" class="pt-pagination-container">
+  <span class="pt-pagination-information">Showing {{pageSize}} of {{totalItems}} items</span>
+  <ul class="pt-pagination">
+      <li class="pt-previous-page">
+          <a (click)="getPage(currentPage - 1)" [ngClass]="{'pt-disabled': currentPage === 1}"><span class="icon-arrow-left"></span></a>
+      </li>
+      <li *ngFor="let page of pages">
+          <a (click)="getPage(page)" [ngClass]="{'pt-active-page':currentPage === page, 'pt-inactive-page': currentPage !== page}">{{page}}</a>
+      </li>  
+      <li class="pt-next-page">
+          <a (click)="getPage(currentPage + 1)" [ngClass]="{'pt-disabled': currentPage === totalPages}"><span class="icon-arrow-right2"></span></a>
+      </li>
+  </ul>
+</div>

@@ -1,0 +1,31 @@
+<p>
+  payment-service works!
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Url</th>
+      <th>Description</th>
+      <th colspan="2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let service of paymentServices">
+      <td (click)="getPaymentService(service.id)">{{service.name}}</td>
+      <td>{{service.url}}</td>
+      <td>{{service.description}}</td>
+      <td>X</td>
+      <td>Edit</td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="paymentService">
+  <span (click)="close()">CLOSE</span>
+  <label>Name</label>
+  <p>{{paymentService.name}}</p>
+  <label>Url</label>
+  <p>{{paymentService.url}}</p>
+  <label>Description</label>
+  <p>{{paymentService.description}}</p>
+</div>

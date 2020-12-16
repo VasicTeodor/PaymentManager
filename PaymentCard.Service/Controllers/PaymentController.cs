@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PaymentCard.Service.Controllers
+namespace Bank.Service.Controllers
 {
     [Route("[controller]")]
     [ApiController]

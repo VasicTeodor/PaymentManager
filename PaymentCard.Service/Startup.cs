@@ -16,7 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 
-namespace PaymentCard.Service
+namespace Bank.Service
 {
     public class Startup
     {
@@ -48,7 +48,7 @@ namespace PaymentCard.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseConsul("paymentcard");
+            app.UseConsul("bank");
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -56,7 +56,7 @@ namespace PaymentCard.Service
                 endpoints.MapControllers();
             });
 
-            app.UseHealthChecks("/paymentcard/checks/health", new HealthCheckOptions()
+            app.UseHealthChecks("/bank/checks/health", new HealthCheckOptions()
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
