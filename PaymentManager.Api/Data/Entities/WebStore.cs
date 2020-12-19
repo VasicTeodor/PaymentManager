@@ -10,6 +10,7 @@ namespace PaymentManager.Api.Data.Entities
         public string SuccessUrl { get; set; }
         public string ErrorUrl { get; set; }
         public string FailureUrl { get; set; }
+        public string StoreName { get; set; }
         public string Url { get; set; }
         public bool SingleMerchantStore { get; set; }
         public ICollection<WebStorePaymentService> PaymentOptions { get; set; }

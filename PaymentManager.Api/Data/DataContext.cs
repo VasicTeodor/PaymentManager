@@ -14,7 +14,9 @@ namespace PaymentManager.Api.Data
         public DbSet<WebStore> WebStores { get; set; }
         public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }
         public DbSet<WebStorePaymentService> WebStorePaymentServices { get; set; }
+        public DbSet<MerchantPaymentServices> MerchantPaymentServices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,12 +52,24 @@ namespace PaymentManager.Api.Data
                     .HasForeignKey(wsp => wsp.WebStoreId);
             });
 
+            builder.Entity<MerchantPaymentServices>(merchantPaymentService =>
+            {
+                merchantPaymentService.HasKey(merchps => new { merchps.PaymentServiceId, merchps.MerchantId });
+
+                merchantPaymentService
+                    .HasOne(msp => msp.Merchant)
+                    .WithMany(ms => ms.PaymentServices)
+                    .HasForeignKey(msp => msp.MerchantId);
+            });
+
             builder.Entity<WebStore>(webStore =>
             {
                 webStore
                     .HasMany(ws => ws.Merchants)
                     .WithOne(m => m.WebStore);
             });
+
+            builder.Entity<Merchant>(merchant => { merchant.HasMany(me => me.PaymentServices); });
         }
     }
 }

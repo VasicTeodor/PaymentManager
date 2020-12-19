@@ -10,7 +10,7 @@ using PaymentManager.Api.Data;
 namespace PaymentManager.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201216225804_InitialMigration")]
+    [Migration("20201218221541_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,10 +114,16 @@ namespace PaymentManager.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MerchantPassword")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
 
                     b.Property<string>("MerchantUniqueId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("MerchantUniqueStoreId")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.Property<byte[]>("TableVersion")
                         .IsConcurrencyToken()
@@ -134,6 +140,54 @@ namespace PaymentManager.Api.Migrations
                     b.ToTable("Merchants");
                 });
 
+            modelBuilder.Entity("PaymentManager.Api.Data.Entities.MerchantPaymentServices", b =>
+                {
+                    b.Property<Guid>("PaymentServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("TableVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("PaymentServiceId", "MerchantId");
+
+                    b.HasIndex("MerchantId");
+
+                    b.ToTable("MerchantPaymentServices");
+                });
+
+            modelBuilder.Entity("PaymentManager.Api.Data.Entities.PaymentRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MerchantOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("MerchantTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("TableVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentRequests");
+                });
+
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.PaymentService", b =>
                 {
                     b.Property<Guid>("Id")
@@ -142,6 +196,9 @@ namespace PaymentManager.Api.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPassTrough")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -200,7 +257,7 @@ namespace PaymentManager.Api.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10, 2)");
 
                     b.Property<Guid>("MerchantOrderId")
                         .HasColumnType("uniqueidentifier");
@@ -323,6 +380,9 @@ namespace PaymentManager.Api.Migrations
                     b.Property<bool>("SingleMerchantStore")
                         .HasColumnType("bit");
 
+                    b.Property<string>("StoreName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SuccessUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -400,6 +460,21 @@ namespace PaymentManager.Api.Migrations
                     b.HasOne("PaymentManager.Api.Data.Entities.WebStore", "WebStore")
                         .WithMany("Merchants")
                         .HasForeignKey("WebStoreId");
+                });
+
+            modelBuilder.Entity("PaymentManager.Api.Data.Entities.MerchantPaymentServices", b =>
+                {
+                    b.HasOne("PaymentManager.Api.Data.Entities.Merchant", "Merchant")
+                        .WithMany("PaymentServices")
+                        .HasForeignKey("MerchantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PaymentManager.Api.Data.Entities.PaymentService", "PaymentService")
+                        .WithMany()
+                        .HasForeignKey("PaymentServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PaymentManager.Api.Data.Entities.UserRole", b =>

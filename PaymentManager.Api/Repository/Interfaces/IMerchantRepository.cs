@@ -10,6 +10,7 @@ namespace PaymentManager.Api.Repository.Interfaces
     {
         Task<PaginationResult<Merchant>> GetMerchants(int pageNumber = 1, int pageSize = 10);
         Task<Merchant> GetMerchant(string merchantUniqueId);
+        Task<Merchant> GetMerchantByStoreUniqueId(string merchantStoreUniqueId);
         Task<Merchant> GetMerchantById(Guid id);
         Task<bool> AddMerchant(Merchant merchant);
         Task<bool> RemoveMerchant(Guid id);

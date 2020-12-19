@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 using PaymentManager.Api.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +65,8 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "PayPal",
                     Description = "PayPal service for handling all paypal transactions.",
-                    Url = @"https://localhost:5005/paypal/"
+                    Url = @"https://localhost:5005/paypal/",
+                    IsPassTrough = false
                 };
 
                 _context.Add(payPalService);
@@ -73,7 +75,8 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "PaymentCard",
                     Description = "Payment service to handle all your payments with payment cards.",
-                    Url = @"https://localhost:5005/bank/"
+                    Url = @"https://localhost:5005/bank/",
+                    IsPassTrough = true
                 };
 
                 _context.Add(bankService);
@@ -82,7 +85,8 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "BitCoin",
                     Description = "Payment service to handle all your crypto currency transactions.",
-                    Url = @"https://localhost:5005/bitcoin/"
+                    Url = @"https://localhost:5005/bitcoin/",
+                    IsPassTrough = false
                 };
 
                 _context.Add(bitcoinService);
@@ -98,7 +102,34 @@ namespace PaymentManager.Api.Data
                 var merchant = new Merchant
                 {
                     MerchantUniqueId = "UniqueMerchantId123",
-                    MerchantPassword = "UniqueMerchantPassword@123"
+                    MerchantPassword = "UniqueMerchantPassword@123",
+                    MerchantUniqueStoreId = $"PublishingCompany01{Guid.NewGuid().ToString()}"
+                };
+
+                var bitCoin = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "BitCoin");
+                var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
+                var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
+
+                merchant.PaymentServices = new List<MerchantPaymentServices>()
+                {
+                    new MerchantPaymentServices()
+                    {
+                        PaymentService = bitCoin,
+                        PaymentServiceId = bitCoin.Id,
+                        Merchant = merchant
+                    },
+                    new MerchantPaymentServices()
+                    {
+                        PaymentService = bank,
+                        PaymentServiceId = bank.Id,
+                        Merchant = merchant
+                    },
+                    new MerchantPaymentServices()
+                    {
+                        PaymentService = payPal,
+                        PaymentServiceId = payPal.Id,
+                        Merchant = merchant
+                    },
                 };
 
                 _context.Add(merchant);
@@ -118,6 +149,7 @@ namespace PaymentManager.Api.Data
                     SuccessUrl = "http://localhost:3000/paymentsuccess",
                     SingleMerchantStore = true,
                     Url = "http://localhost:3000/home",
+                    StoreName = "PublishingCompany01",
                     PaymentOptions = new List<WebStorePaymentService>()
                 };
 
@@ -126,7 +158,6 @@ namespace PaymentManager.Api.Data
                 var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
 
                 var merchant = _context.Merchants.FirstOrDefault(m => m.MerchantUniqueId == "UniqueMerchantId123");
-                merchant.WebStore = webStore;
 
                 webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bitCoin, PaymentServiceId = bitCoin.Id, WebStore = webStore });
                 webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, PaymentServiceId = bank.Id, WebStore = webStore });
@@ -135,7 +166,9 @@ namespace PaymentManager.Api.Data
                 webStore.Merchants = new List<Merchant>(){merchant};
 
                 _context.Add(webStore);
-
+                _context.SaveChanges();
+                merchant.WebStore = webStore;
+                _context.Update(merchant);
                 _context.SaveChanges();
             }
         }

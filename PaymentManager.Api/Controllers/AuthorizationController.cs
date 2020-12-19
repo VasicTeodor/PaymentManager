@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PaymentManager.Api.Data.Entities;
 using PaymentManager.Api.Dtos;
+using PaymentManager.Api.Repository.Interfaces;
 using Serilog;
 
 namespace PaymentManager.Api.Controllers
@@ -28,13 +29,15 @@ namespace PaymentManager.Api.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IWebStoreRepository _webStoreRepository;
 
-        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, IMapper mapper)
+        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, IMapper mapper, IWebStoreRepository webStoreRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
             _mapper = mapper;
+            _webStoreRepository = webStoreRepository;
         }
 
         [HttpPost("register")]
@@ -92,6 +95,27 @@ namespace PaymentManager.Api.Controllers
             }
         }
 
+        [HttpPost("requesttoken")]
+        public async Task<IActionResult> RequestToken(WebStoreTokenRequestDto request)
+        {
+            Log.Information($"Client with id {request.WebStoreId} and {request.WebStoreName} requested token");
+            var webStore = await _webStoreRepository.GetWebStoreById(request.WebStoreId);
+
+            if (webStore == null)
+            {
+                Log.Information($"Client with id {request.WebStoreId} does not exist");
+                return BadRequest($"Client with id {request.WebStoreId} does not exist");
+            }
+            else
+            {
+                Log.Information($"Client with id {request.WebStoreId} successful registered on system");
+                return Ok(new
+                {
+                    token = GenerateJwtTokenForClient(webStore)
+                });
+            }
+        }
+
         private async Task<String> GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
@@ -117,7 +141,36 @@ namespace PaymentManager.Api.Controllers
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds,
                 Issuer = "paymentmanager",
-                Audience = "http://localhost:4200"
+                Audience = "http://localhost:4200, http://localhost:3000"
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string GenerateJwtTokenForClient(WebStore webStore)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, webStore.Id.ToString()),
+                new Claim(ClaimTypes.Name, webStore.StoreName),
+                new Claim(ClaimTypes.Role, "User")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds,
+                Issuer = "paymentmanager",
+                Audience = "http://localhost:4200, http://localhost:3000"
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
