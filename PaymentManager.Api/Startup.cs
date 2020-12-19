@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PaymentManager.Api.Data;
 using PaymentManager.Api.Data.Entities;
 using PaymentManager.Api.Helpers;
@@ -62,12 +63,17 @@ namespace PaymentManager.Api
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidAudience = "http://localhost:4200",
+                    ValidAudience = "http://localhost:4200, http://localhost:3000",
                     ValidIssuer = "paymentmanager"
                 };
             });
 
             // Health Checks
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentManager.Api", Version = "v1" });
+            });
+
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -77,7 +83,7 @@ namespace PaymentManager.Api
             // CORS Policy
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy",
-                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "https://www.sandbox.paypal.com")
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "https://www.sandbox.paypal.com")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowAnyOrigin());
@@ -89,6 +95,8 @@ namespace PaymentManager.Api
             services.AddScoped<IPaymentServiceRepository, PaymentServiceRepository>();
             services.AddScoped<IWebStoreRepository, WebStoreRepository>();
             services.AddScoped<IMerchantRepository, MerchantRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
             services.AddScoped<IPaymentService, Services.PaymentService>();
 
             // Register Seed Class
@@ -112,10 +120,22 @@ namespace PaymentManager.Api
                 context.Database.Migrate();
             }
 
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/error");
+            //}
+
+            app.UseExceptionHandler("/error");
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaymentManager.Api");
+            });
 
             app.UseHttpsRedirection();
 
@@ -132,9 +152,9 @@ namespace PaymentManager.Api
                 endpoints.MapControllers();
             });
 
-            seed.SeedMerchant();
             seed.SeedUsers();
             seed.SeedPaymentServices();
+            seed.SeedMerchant();
             seed.SeedWebStore();
 
             app.UseHealthChecks("/paymentmanagerapi/checks/health", new HealthCheckOptions()

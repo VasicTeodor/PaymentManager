@@ -34,8 +34,18 @@ namespace PaymentManager.Api.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
         /// <summary>
@@ -59,8 +69,18 @@ namespace PaymentManager.Api.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
         /// <summary>
@@ -82,11 +102,27 @@ namespace PaymentManager.Api.Services
             if (response.StatusCode == HttpStatusCode.Accepted)
             {
                 return response.Data;
+            } 
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
+        /// <summary>
+        /// For deleting an existing item
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="apiUrl"></param>
+        /// <returns></returns>
         public async Task<T> DeleteRequest<T>(string apiUrl) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.DELETE);
@@ -97,10 +133,27 @@ namespace PaymentManager.Api.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
+        /// <summary>
+        /// For crating a patch request
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="apiUrl"></param>
+        /// <param name="patchObject"></param>
+        /// <returns></returns>
         public async Task<T> PatchRequest<T>(string apiUrl, object patchObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.PATCH)
@@ -116,8 +169,18 @@ namespace PaymentManager.Api.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
     }
 }

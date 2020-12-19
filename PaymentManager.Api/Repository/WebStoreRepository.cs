@@ -18,6 +18,11 @@ namespace PaymentManager.Api.Repository
             _context = context;
         }
 
+        public async Task<WebStore> GetWebStoreByIdAndName(Guid id, string name)
+        {
+            return await _context.WebStores.FirstOrDefaultAsync(ws => ws.Id == id && String.Equals(ws.StoreName, name, StringComparison.CurrentCultureIgnoreCase));
+        }
+
         public async Task<bool> AddWebStore(WebStore webStore)
         {
             await _context.WebStores.AddAsync(webStore);

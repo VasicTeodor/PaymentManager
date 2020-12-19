@@ -9,6 +9,7 @@ namespace PaymentManager.Api.Repository.Interfaces
     {
         Task<PaginationResult<WebStore>> GetWebStores(int pageNumber = 1, int pageSize = 10);
         Task<WebStore> GetWebStoreById(Guid id);
+        Task<WebStore> GetWebStoreByIdAndName(Guid id, string name);
         Task<bool> AddWebStore(WebStore webStore);
         Task<bool> RemoveWebStore(Guid id);
         Task<bool> UpdateWebStore(Guid id, WebStore webStoreForUpdate);

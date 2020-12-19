@@ -25,7 +25,12 @@ namespace PaymentManager.Api.Repository
                 PageSize = pageSize,
                 PageNumber = pageNumber,
                 NumberOfItems = await _context.Merchants.CountAsync(),
-                Items = await _context.Merchants.Include(m => m.WebStore).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync()
+                Items = await _context.Merchants
+                    .Include(m => m.WebStore)
+                    .Include(m => m.PaymentServices)
+                    .ThenInclude(ps => ps.PaymentService)
+                    .Skip(pageSize * (pageNumber - 1))
+                    .Take(pageSize).ToListAsync()
             };
 
             return result;
@@ -33,12 +38,29 @@ namespace PaymentManager.Api.Repository
 
         public async Task<Merchant> GetMerchant(string merchantUniqueId)
         {
-            return await _context.Merchants.FirstOrDefaultAsync(m => m.MerchantUniqueId == merchantUniqueId);
+            return await _context.Merchants
+                .Include(m => m.PaymentServices)
+                .ThenInclude(ps => ps.PaymentService)
+                .Include(m => m.WebStore)
+                .FirstOrDefaultAsync(m => m.MerchantUniqueId == merchantUniqueId);
+        }
+
+        public async Task<Merchant> GetMerchantByStoreUniqueId(string merchantStoreUniqueId)
+        {
+            return await _context.Merchants
+                .Include(m => m.PaymentServices)
+                .ThenInclude(ps => ps.PaymentService)
+                .Include(m => m.WebStore)
+                .FirstOrDefaultAsync(m => m.MerchantUniqueStoreId == merchantStoreUniqueId);
         }
 
         public async Task<Merchant> GetMerchantById(Guid id)
         {
-            return await _context.Merchants.FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Merchants
+                .Include(m => m.WebStore)
+                .Include(m => m.PaymentServices)
+                .ThenInclude(ps => ps.PaymentService)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<bool> AddMerchant(Merchant merchant)

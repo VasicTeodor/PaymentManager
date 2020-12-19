@@ -49,6 +49,22 @@ namespace PaymentManager.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PaymentRequests",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    MerchantId = table.Column<Guid>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
+                    MerchantTimestamp = table.Column<DateTime>(nullable: false),
+                    MerchantOrderId = table.Column<Guid>(nullable: false),
+                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRequests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PaymentServices",
                 columns: table => new
                 {
@@ -56,6 +72,7 @@ namespace PaymentManager.Api.Migrations
                     Name = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
+                    IsPassTrough = table.Column<bool>(nullable: false),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -73,7 +90,7 @@ namespace PaymentManager.Api.Migrations
                     AcquirerTimeStamp = table.Column<DateTime>(nullable: false),
                     PaymentId = table.Column<Guid>(nullable: false),
                     Status = table.Column<string>(nullable: true),
-                    Amount = table.Column<decimal>(nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10, 2)", nullable: false),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -89,6 +106,7 @@ namespace PaymentManager.Api.Migrations
                     SuccessUrl = table.Column<string>(nullable: true),
                     ErrorUrl = table.Column<string>(nullable: true),
                     FailureUrl = table.Column<string>(nullable: true),
+                    StoreName = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true),
                     SingleMerchantStore = table.Column<bool>(nullable: false),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
@@ -210,8 +228,9 @@ namespace PaymentManager.Api.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     WebStoreId = table.Column<Guid>(nullable: true),
-                    MerchantPassword = table.Column<string>(nullable: true),
-                    MerchantUniqueId = table.Column<string>(nullable: true),
+                    MerchantPassword = table.Column<string>(maxLength: 30, nullable: true),
+                    MerchantUniqueId = table.Column<string>(maxLength: 100, nullable: true),
+                    MerchantUniqueStoreId = table.Column<string>(maxLength: 100, nullable: true),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -246,6 +265,31 @@ namespace PaymentManager.Api.Migrations
                         name: "FK_WebStorePaymentServices_WebStores_WebStoreId",
                         column: x => x.WebStoreId,
                         principalTable: "WebStores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MerchantPaymentServices",
+                columns: table => new
+                {
+                    MerchantId = table.Column<Guid>(nullable: false),
+                    PaymentServiceId = table.Column<Guid>(nullable: false),
+                    TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MerchantPaymentServices", x => new { x.PaymentServiceId, x.MerchantId });
+                    table.ForeignKey(
+                        name: "FK_MerchantPaymentServices_Merchants_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "Merchants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MerchantPaymentServices_PaymentServices_PaymentServiceId",
+                        column: x => x.PaymentServiceId,
+                        principalTable: "PaymentServices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -290,6 +334,11 @@ namespace PaymentManager.Api.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MerchantPaymentServices_MerchantId",
+                table: "MerchantPaymentServices",
+                column: "MerchantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Merchants_WebStoreId",
                 table: "Merchants",
                 column: "WebStoreId");
@@ -318,7 +367,10 @@ namespace PaymentManager.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Merchants");
+                name: "MerchantPaymentServices");
+
+            migrationBuilder.DropTable(
+                name: "PaymentRequests");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -331,6 +383,9 @@ namespace PaymentManager.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Merchants");
 
             migrationBuilder.DropTable(
                 name: "PaymentServices");
