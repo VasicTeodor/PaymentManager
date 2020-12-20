@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using PayPal.Api;
 using PayPal.Service.Dtos;
 using PayPal.Service.Services.Interfaces;
@@ -13,22 +14,29 @@ namespace PayPal.Service.Services
     {
         private string _accessToken;
 
+        public IConfiguration Configuration { get; }
+
         public string Token
         {
             get { return _accessToken; }
             set { _accessToken = value; }
         }
 
+        public PayPalService(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public async Task<Payment> CreatePayment(PaymentRequestDto paymentRequest)
         {
             Payment createdPayment = new Payment();
-            var config = ConfigManager.Instance.GetProperties();
+            var config = GetPayPalCredentials();
             _accessToken = new OAuthTokenCredential(config).GetAccessToken();
 
             var apiContext = new APIContext(_accessToken)
             {
-                Config = ConfigManager.Instance.GetProperties()
-            };
+                Config = GetPayPalCredentials()
+        };
 
             try
             {
@@ -65,8 +73,8 @@ namespace PayPal.Service.Services
                     },
                     redirect_urls = new RedirectUrls()
                     {
-                        cancel_url = "https://localhost:5021/api/paypal/cancel",
-                        return_url = $"https://localhost:5021/api/paypal/success"
+                        cancel_url = "https://localhost:5005/paypal/paypal/cancel",
+                        return_url = $"https://localhost:5005/paypal/paypal/success"
                     }
                 };
 
@@ -84,13 +92,13 @@ namespace PayPal.Service.Services
 
         public async Task<Payment> ExecutePayment(string paymentId, string payerId, string email = null)
         {
-            var config = ConfigManager.Instance.GetProperties();
+            var config = GetPayPalCredentials();
             _accessToken = new OAuthTokenCredential(config).GetAccessToken();
 
             var apiContext = new APIContext(_accessToken)
             {
-                Config = ConfigManager.Instance.GetProperties()
-            };
+                Config = GetPayPalCredentials()
+        };
 
             PaymentExecution paymentExecution = new PaymentExecution() { payer_id = payerId };
 
@@ -99,6 +107,20 @@ namespace PayPal.Service.Services
             Payment executedPayment = await Task.Run(() => payment.Execute(apiContext, paymentExecution));
 
             return executedPayment;
+        }
+
+        private Dictionary<string, string> GetPayPalCredentials()
+        {
+            var mode = Configuration.GetSection("PayPalCredentials:mode").Value;
+            var clientId = Configuration.GetSection("PayPalCredentials:clientId").Value;
+            var clientSecret = Configuration.GetSection("PayPalCredentials:clientSecret").Value;
+
+            return new Dictionary<string, string>()
+            {
+                {"mode", mode },
+                {"clientId", clientId },
+                {"clientSecret", clientSecret }
+            };
         }
     }
 }

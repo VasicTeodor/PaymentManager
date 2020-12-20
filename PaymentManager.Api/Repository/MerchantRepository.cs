@@ -35,22 +35,17 @@ namespace PaymentManager.Api.Repository
                     .Skip(pageSize * (pageNumber - 1))
                     .Take(pageSize).ToListAsync()
             };
-
-            result.Items.ForEach(merchant =>
-                {
-                    merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
-                    merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
-                });
             return result;
         }
 
         public async Task<Merchant> GetMerchant(string merchantUniqueId)
         {
+            var chipMerchantUniqueId = _cryptographyService.EncryptStringAes(merchantUniqueId);
             var merchant = await _context.Merchants
                 .Include(m => m.PaymentServices)
                 .ThenInclude(ps => ps.PaymentService)
                 .Include(m => m.WebStore)
-                .FirstOrDefaultAsync(m => m.MerchantUniqueId == merchantUniqueId);
+                .FirstOrDefaultAsync(m => m.MerchantUniqueId == chipMerchantUniqueId);
 
             merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
             merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);

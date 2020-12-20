@@ -37,7 +37,7 @@ namespace PayPal.Service
                 x.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
             services.AddConsulConfig(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
             

@@ -32,7 +32,7 @@ namespace PaymentManager.Api.Controllers
         {
             Log.Information("Received payment request for payment by card");
             var paymentRequest =
-                await _paymentService.GeneratePaymentRequest(paymentRequestDto.MerchantId, paymentRequestDto.Amount);
+                await _paymentService.GeneratePaymentRequest(paymentRequestDto.MerchantStoreId, paymentRequestDto.Amount);
 
             Log.Information($"SENDING PAYMENT REQUEST: {paymentRequest.ToString()}");
             var result = await _restClient.PostRequest<PaymentRequestResponseDto>(paymentRequestDto.PaymentServiceUrl, paymentRequest);
