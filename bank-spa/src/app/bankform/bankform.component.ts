@@ -10,7 +10,7 @@ import { BankService } from "src/service/bank.service";
 })
 export class BankformComponent implements OnInit {
   isSubmitted = false;
-  transaction = "";
+  orderId = "";
 
   constructor(
     private bankservice: BankService,
@@ -18,8 +18,8 @@ export class BankformComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.transaction = this.activatedRoute.snapshot.paramMap.get("transaction");
-    console.log(this.transaction);
+    this.orderId = this.activatedRoute.snapshot.paramMap.get("orderId");
+    console.log(this.orderId);
   }
 
   submitForm(form: NgForm) {

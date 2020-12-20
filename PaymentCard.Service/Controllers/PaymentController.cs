@@ -38,7 +38,7 @@ namespace Bank.Service.Controllers
 
         [HttpPost]
         [Route("CheckPaymentRequest")]
-        public ActionResult<PaymentRequestResponseDto> CheckPayment([FromBody]PaymentRequest paymentRequest)
+        public ActionResult<PaymentRequestResponseDto> CheckPayment([FromBody] PaymentRequest paymentRequest)
         {
             var responseDto = _paymentService.ValidatePayment(paymentRequest);
             return Ok(responseDto);
@@ -46,7 +46,7 @@ namespace Bank.Service.Controllers
 
         [HttpPost]
         [Route("FrontPayment")]
-        public ActionResult SubmitPayment([FromBody]CardDto cardDto)
+        public ActionResult SubmitPayment([FromBody] CardDto cardDto, string orderId)
         {
 
             return Ok();

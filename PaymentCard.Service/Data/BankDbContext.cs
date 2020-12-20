@@ -9,7 +9,7 @@ namespace Bank.Service.Data
 {
     public class BankDbContext : DbContext
     {
-        protected BankDbContext()
+        public BankDbContext()
         {
         }
 

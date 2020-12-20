@@ -6,6 +6,7 @@ using Bank.Service.Data;
 using Bank.Service.Repositories;
 using Bank.Service.Repositories.Implementations;
 using Bank.Service.Repositories.Interfaces;
+using Bank.Service.Services;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
 using Infrastructure.Service.Interface;
@@ -34,7 +35,7 @@ namespace Bank.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddConsulConfig(Configuration);
+            //services.AddConsulConfig(Configuration);
             services.AddControllers();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
@@ -42,12 +43,13 @@ namespace Bank.Service
             // Register Services
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+            services.AddScoped<BankDbContext>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<BankDbContext>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
         }
 
@@ -59,7 +61,7 @@ namespace Bank.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseConsul("bank");
+            //app.UseConsul("bank");
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>

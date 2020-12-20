@@ -7,7 +7,6 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 })
 export class BankService {
   url: String = "http://localhost:8091";
-  //url: String = "http://192.168.1.218:8091";
 
   constructor(private http: HttpClient) {}
 
@@ -18,9 +17,5 @@ export class BankService {
   //       'responseType': 'text'
   //     })
   //   });
-  // }
-
-  // changeStatus(url: String) : Observable<any>{
-  //   return this.http.get(`${url}`);
   // }
 }
