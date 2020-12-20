@@ -19,8 +19,8 @@ namespace PaymentManager.Api
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({SourceContext}) {Message}{NewLine}{Exception}")
-                .WriteTo.File($@"Logs\PaymentManagerApi-{DateTime.UtcNow}.log", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({SourceContext}) {Message}{NewLine}{Exception}")
+                .WriteTo.Console()
+                .WriteTo.File($@"Logs\PaymentManagerApi.log")
                 .CreateLogger();
 
             try

@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using PaymentManager.Api.Data.Entities;
 using PaymentManager.Api.Dtos;
 using PaymentManager.Api.Repository.Interfaces;
+using PaymentManager.Api.Services.Interfaces;
 using Serilog;
 
 namespace PaymentManager.Api.Controllers
@@ -30,14 +31,16 @@ namespace PaymentManager.Api.Controllers
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IWebStoreRepository _webStoreRepository;
+        private readonly ISecurityCryptographyService _cryptographyService;
 
-        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, IMapper mapper, IWebStoreRepository webStoreRepository)
+        public AuthorizationController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration config, IMapper mapper, IWebStoreRepository webStoreRepository, ISecurityCryptographyService cryptography)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
             _mapper = mapper;
             _webStoreRepository = webStoreRepository;
+            _cryptographyService = cryptography;
         }
 
         [HttpPost("register")]
@@ -138,7 +141,7 @@ namespace PaymentManager.Api.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddMinutes(15),
                 SigningCredentials = creds,
                 Issuer = "paymentmanager",
                 Audience = "http://localhost:4200, http://localhost:3000"
@@ -167,7 +170,7 @@ namespace PaymentManager.Api.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddMinutes(15),
                 SigningCredentials = creds,
                 Issuer = "paymentmanager",
                 Audience = "http://localhost:4200, http://localhost:3000"
