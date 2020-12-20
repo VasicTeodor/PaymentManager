@@ -228,8 +228,8 @@ namespace PaymentManager.Api.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     WebStoreId = table.Column<Guid>(nullable: true),
-                    MerchantPassword = table.Column<string>(maxLength: 30, nullable: true),
-                    MerchantUniqueId = table.Column<string>(maxLength: 100, nullable: true),
+                    MerchantPassword = table.Column<string>(nullable: true),
+                    MerchantUniqueId = table.Column<string>(nullable: true),
                     MerchantUniqueStoreId = table.Column<string>(maxLength: 100, nullable: true),
                     TableVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
