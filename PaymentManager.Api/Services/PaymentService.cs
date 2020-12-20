@@ -31,12 +31,12 @@ namespace PaymentManager.Api.Services
         /// <summary>
         /// Creates payment request for merchants bank
         /// </summary>
-        /// <param name="merchantId">unique id for merchant</param>
+        /// <param name="merchantStoreId">unique id for merchant</param>
         /// <param name="amount">money amount for transaction</param>
         /// <returns></returns>
-        public async Task<PaymentRequest> GeneratePaymentRequest(string merchantId, decimal amount)
+        public async Task<PaymentRequest> GeneratePaymentRequest(string merchantStoreId, decimal amount)
         {
-            var merchant = await _merchantRepository.GetMerchantByStoreUniqueId(merchantId);
+            var merchant = await _merchantRepository.GetMerchantByStoreUniqueId(merchantStoreId);
 
             var paymentRequest = new PaymentRequest
             {

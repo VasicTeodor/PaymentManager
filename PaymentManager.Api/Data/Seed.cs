@@ -4,6 +4,7 @@ using PaymentManager.Api.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
+using PaymentManager.Api.Services.Interfaces;
 
 namespace PaymentManager.Api.Data
 {
@@ -12,13 +13,16 @@ namespace PaymentManager.Api.Data
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly DataContext _context;
+        private readonly ISecurityCryptographyService _cryptographyService;
+        private readonly Guid _webStoreId = Guid.Parse("54a0924b-200a-4efc-a6ac-ff21873c3b37");
 
-        public Seed(UserManager<User> userManager, RoleManager<Role> roleManager, DataContext context)
+        public Seed(UserManager<User> userManager, RoleManager<Role> roleManager, DataContext context, ISecurityCryptographyService cryptographyService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
             _context.Database.EnsureCreated();
+            _cryptographyService = cryptographyService;
         }
 
         public void SeedUsers()
@@ -103,8 +107,11 @@ namespace PaymentManager.Api.Data
                 {
                     MerchantUniqueId = "UniqueMerchantId123",
                     MerchantPassword = "UniqueMerchantPassword@123",
-                    MerchantUniqueStoreId = $"PublishingCompany01{Guid.NewGuid().ToString()}"
+                    MerchantUniqueStoreId = $"PublishingCompany01Merchant3212"
                 };
+
+                merchant.MerchantUniqueId = _cryptographyService.EncryptStringAes(merchant.MerchantUniqueId);
+                merchant.MerchantPassword = _cryptographyService.EncryptStringAes(merchant.MerchantPassword);
 
                 var bitCoin = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "BitCoin");
                 var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
@@ -144,6 +151,7 @@ namespace PaymentManager.Api.Data
             {
                 var webStore = new WebStore()
                 {
+                    Id = _webStoreId,
                     ErrorUrl = "http://localhost:3000/paymenterror",
                     FailureUrl = "http://localhost:3000/paymentfailure",
                     SuccessUrl = "http://localhost:3000/paymentsuccess",
@@ -157,7 +165,7 @@ namespace PaymentManager.Api.Data
                 var payPal = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PayPal");
                 var bank = _context.PaymentServices.FirstOrDefault(ps => ps.Name == "PaymentCard");
 
-                var merchant = _context.Merchants.FirstOrDefault(m => m.MerchantUniqueId == "UniqueMerchantId123");
+                var merchant = _context.Merchants.FirstOrDefault(m => m.MerchantUniqueStoreId == "PublishingCompany01Merchant3212");
 
                 webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bitCoin, PaymentServiceId = bitCoin.Id, WebStore = webStore });
                 webStore.PaymentOptions.Add(new WebStorePaymentService() { PaymentService = bank, PaymentServiceId = bank.Id, WebStore = webStore });
