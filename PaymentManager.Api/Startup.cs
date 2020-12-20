@@ -118,7 +118,7 @@ namespace PaymentManager.Api
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
-                context.Database.Migrate();
+               // context.Database.Migrate();
             }
 
             //if (env.IsDevelopment())

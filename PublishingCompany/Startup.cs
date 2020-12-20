@@ -24,6 +24,15 @@ namespace PublishingCompany.Api
             services.AddControllers();
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+
+            // CORS Policy
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:3000", "https://www.sandbox.paypal.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +48,8 @@ namespace PublishingCompany.Api
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

@@ -34,8 +34,18 @@ namespace PublishingCompany.Infrastructure.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
         /// <summary>
@@ -44,7 +54,7 @@ namespace PublishingCompany.Infrastructure.Services
         /// <param name="apiUrl">API Url</param>
         /// <param name="postObject">The object to be created</param>
         /// <returns>A Task with created item</returns>
-        public async Task<T> PostRequest<T>(string apiUrl, T postObject) where T : class
+        public async Task<T> PostRequest<T>(string apiUrl, object postObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.POST)
             {
@@ -59,8 +69,18 @@ namespace PublishingCompany.Infrastructure.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
         /// <summary>
@@ -68,7 +88,7 @@ namespace PublishingCompany.Infrastructure.Services
         /// </summary>
         /// <param name="apiUrl">API Url</param>
         /// <param name="putObject">The object to be edited</param>
-        public async Task<T> PutRequest<T>(string apiUrl, T putObject) where T : class
+        public async Task<T> PutRequest<T>(string apiUrl, object putObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.POST)
             {
@@ -83,10 +103,26 @@ namespace PublishingCompany.Infrastructure.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
+        /// <summary>
+        /// For deleting an existing item
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="apiUrl"></param>
+        /// <returns></returns>
         public async Task<T> DeleteRequest<T>(string apiUrl) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.DELETE);
@@ -97,11 +133,28 @@ namespace PublishingCompany.Infrastructure.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
 
-        public async Task<T> PatchRequest<T>(string apiUrl, T patchObject) where T : class
+        /// <summary>
+        /// For crating a patch request
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="apiUrl"></param>
+        /// <param name="patchObject"></param>
+        /// <returns></returns>
+        public async Task<T> PatchRequest<T>(string apiUrl, object patchObject) where T : class
         {
             var request = new RestRequest($"{apiUrl}", Method.PATCH)
             {
@@ -116,8 +169,18 @@ namespace PublishingCompany.Infrastructure.Services
             {
                 return response.Data;
             }
-
-            throw new Exception("Api request failed");
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                return null;
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                throw new Exception("Api request failed");
+            }
         }
     }
 }
