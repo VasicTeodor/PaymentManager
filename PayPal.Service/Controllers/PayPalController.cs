@@ -20,30 +20,40 @@ namespace PayPal.Service.Controllers
             _payPalService = payPalService;
         }
 
-        // GET api/values  
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            var port = Request.Host.Port;
-
-            return Ok(String.Join(", ",new string[] { "Payment via PayPal", "PayPal.Service", port.Value.ToString() }));
-        }
-
-        [HttpGet]
-        [Route("GetById")]
-        public ActionResult<IEnumerable<string>> GetById(string id)
-        {
-            var port = Request.Host.Port;
-
-            return Ok(String.Join(", ",new string[] { "Payment via PayPal", "PayPal.Service", $"ID received {id}",port.Value.ToString() }));
-        }
-
         [HttpPost]
         [Route("createpayment")]
         public async Task<IActionResult> CreatePayment(PaymentRequestDto paymentRequestDto)
         {
             var result = await _payPalService.CreatePayment(paymentRequestDto);
-            return Ok(result);
+
+            if (result != null)
+            {
+                foreach (var link in result.links)
+                {
+                    if (link.rel.Equals("approval_url"))
+                    {
+                        return Ok(new { address = link.href });
+                    }
+                }
+            }
+
+            return BadRequest("Your PayPal account is not verificated!");
+        }
+
+        [HttpGet]
+        [Route("success")]
+        public async Task<IActionResult> ExecutePayment(string paymentId, string token, string payerId, string email = null)
+        {
+            var result = await _payPalService.ExecutePayment(paymentId, payerId, email);
+
+            return Redirect("http://localhost:4200/tickets;success=1");
+        }
+
+        [HttpGet]
+        [Route("cancel")]
+        public async Task<IActionResult> CancelPayment()
+        {
+            return Redirect("http://localhost:4200/tickets;success=0");
         }
     }
 }
