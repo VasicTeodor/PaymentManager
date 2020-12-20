@@ -98,6 +98,7 @@ namespace PaymentManager.Api
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
             services.AddScoped<IPaymentService, Services.PaymentService>();
+            services.AddScoped<ISecurityCryptographyService, SecurityCryptographyService>();
 
             // Register Seed Class
             services.AddTransient<Seed>();
