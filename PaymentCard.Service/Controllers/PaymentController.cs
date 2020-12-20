@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Bank.Service.Dto;
+using Bank.Service.Models;
+using Bank.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bank.Service.Controllers
@@ -8,6 +11,13 @@ namespace Bank.Service.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
+        private readonly IPaymentService _paymentService;
+
+        public PaymentController(IPaymentService paymentService)
+        {
+            _paymentService = paymentService;
+        }
+
         // GET api/values  
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -24,6 +34,22 @@ namespace Bank.Service.Controllers
             var port = Request.Host.Port;
 
             return Ok(String.Join(", ", new string[] { "Payment via PaymentCard", "PaymentCard.Service", $"ID received {id}", port.Value.ToString() }));
+        }
+
+        [HttpPost]
+        [Route("CheckPaymentRequest")]
+        public ActionResult<PaymentRequestResponseDto> CheckPayment([FromBody]PaymentRequest paymentRequest)
+        {
+            var responseDto = _paymentService.ValidatePayment(paymentRequest);
+            return Ok(responseDto);
+        }
+
+        [HttpPost]
+        [Route("FrontPayment")]
+        public ActionResult SubmitPayment([FromBody]CardDto cardDto)
+        {
+
+            return Ok();
         }
     }
 }

@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bank.Service.Data;
+using Bank.Service.Repositories;
+using Bank.Service.Repositories.Implementations;
+using Bank.Service.Repositories.Interfaces;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
 using Infrastructure.Service.Interface;
@@ -38,6 +42,13 @@ namespace Bank.Service
             // Register Services
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICardRepository, CardRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<BankDbContext>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

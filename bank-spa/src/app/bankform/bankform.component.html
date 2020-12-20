@@ -1,0 +1,67 @@
+<h1>Bank</h1>
+
+<form #f="ngForm" (submit)="submitForm(f)" novalidate>
+  <div>
+    <label class="custom-control-label" for="pan"
+      >Broj kreditne kartice:
+    </label>
+    <input
+      id="pan"
+      type="text"
+      class="custom-control-input"
+      value="pan"
+      name="pan"
+      ngModel
+      required
+    />
+  </div>
+
+  <div>
+    <label class="custom-control-label" for="holderName"
+      >Ime vlasnika kartice:
+    </label>
+    <input
+      id="holderName"
+      type="text"
+      class="custom-control-input"
+      value="holderName"
+      name="holderName"
+      ngModel
+      required
+    />
+  </div>
+
+  <div>
+    <label class="custom-control-label" for="securityCode">CVC: </label>
+    <input
+      id="securityCode"
+      type="text"
+      class="custom-control-input"
+      value="securityCode"
+      name="securityCode"
+      ngModel
+      required
+    />
+  </div>
+
+  <div>
+    <label class="custom-control-label" for="validTo"
+      >Datum isteka kartice:
+    </label>
+    <input
+      id="validTo"
+      type="text"
+      class="custom-control-input"
+      value="validTo"
+      name="validTo"
+      ngModel
+      required
+    />
+  </div>
+
+  <div *ngIf="isSubmitted && f.invalid">
+    <p>Please select either value</p>
+  </div>
+
+  <button type="submit" class="btn btn-danger btn-lg btn-block">Potvrdi</button>
+</form>
