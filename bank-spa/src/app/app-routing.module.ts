@@ -4,7 +4,7 @@ import { BankformComponent } from "./bankform/bankform.component";
 
 const routes: Routes = [
   {
-    path: "banka/card/:orderId",
+    path: ":orderId",
     component: BankformComponent,
   },
 ];

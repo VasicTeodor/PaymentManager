@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Bank.Service.Dto;
 using Bank.Service.Models;
 using Bank.Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Bank.Service.Controllers
 {
@@ -12,9 +14,12 @@ namespace Bank.Service.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IGenericRestClient _restClient;
+        private string paymentManagerApiUrl = "http://localhost:11284/";
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IGenericRestClient restClient)
         {
+            _restClient = restClient;
             _paymentService = paymentService;
         }
 
@@ -40,16 +45,20 @@ namespace Bank.Service.Controllers
         [Route("CheckPaymentRequest")]
         public ActionResult<PaymentRequestResponseDto> CheckPayment([FromBody] PaymentRequest paymentRequest)
         {
+            Log.Information($"Bank service receieved payment request {paymentRequest.ToString()}");
             var responseDto = _paymentService.ValidatePayment(paymentRequest);
             return Ok(responseDto);
         }
 
         [HttpPost]
         [Route("FrontPayment")]
-        public ActionResult SubmitPayment([FromBody] CardDto cardDto, string orderId)
+        public async Task<ActionResult<TransactionDto>> SubmitPayment(Guid Id,[FromBody] CardDto cardDto)
         {
-
-            return Ok();
+            Log.Information($"Bank service reveived user payment request from bank");
+            var transportDto = _paymentService.SubmitPayment(cardDto, Id);
+            Log.Information($"Bank service sending Transaction data to PaymentManager to finish transaction");
+            var callPaymentManager = await _restClient.PostRequest<TransactionDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
+            return Ok(callPaymentManager);
         }
     }
 }

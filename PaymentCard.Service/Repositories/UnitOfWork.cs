@@ -11,19 +11,21 @@ namespace Bank.Service.Repositories
     {
         private readonly BankDbContext _context;
 
-        public UnitOfWork(BankDbContext context, IClientRepository accounts, ICardRepository cards, IClientRepository clients, ITransactionRepository transactions)
+        public UnitOfWork(BankDbContext context, IClientRepository accounts, ICardRepository cards, IClientRepository clients, ITransactionRepository transactions, IPaymentRepository payments)
         {
             _context = context;
             Accounts = accounts;
             Cards = cards;
             Clients = clients;
             Transactions = transactions;
+            Payments = payments;
         }
 
         public IClientRepository Accounts { get; set; }
         public ICardRepository Cards { get; set; }
         public IClientRepository Clients { get; set; }
         public ITransactionRepository Transactions { get; set; }
+        public IPaymentRepository Payments { get; set; }
 
         public int Complete()
         {

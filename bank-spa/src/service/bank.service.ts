@@ -6,16 +6,19 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
   providedIn: "root",
 })
 export class BankService {
-  url: String = "http://localhost:8091";
+  url: String = "http://localhost:10662";
 
   constructor(private http: HttpClient) {}
 
-  // confirmed(formVal,transaction): Observable<any>{
-  //   return this.http.post(`${this.url}/payment/${transaction}`, formVal,{
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'application/json',
-  //       'responseType': 'text'
-  //     })
-  //   });
-  // }
+  confirmPayment(formVal, orderId): Observable<any> {
+    return this.http.post(
+      `${this.url}/payment/FrontPayment/${orderId}`,
+      formVal,
+      {
+        headers: new HttpHeaders({
+          "Content-Type": "application/json",
+        }),
+      }
+    );
+  }
 }

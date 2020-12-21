@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Bank.Service.Data;
+using Bank.Service.Helpers;
 using Bank.Service.Repositories;
 using Bank.Service.Repositories.Implementations;
 using Bank.Service.Repositories.Interfaces;
 using Bank.Service.Services;
 using HealthChecks.UI.Client;
-using Infrastructure.Service;
-using Infrastructure.Service.Interface;
-using Infrastructure.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -36,9 +35,17 @@ namespace Bank.Service
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddConsulConfig(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy1",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
 
             // Register Services
             services.AddScoped<IRestClient, RestClient>();
@@ -48,8 +55,17 @@ namespace Bank.Service
             services.AddScoped<ICardRepository, CardRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IPaymentService, PaymentService>();
+
+            // Register Mapper
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapperProfiles());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
         }
 
@@ -63,11 +79,12 @@ namespace Bank.Service
 
             //app.UseConsul("bank");
             app.UseRouting();
-
+            app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
 
             app.UseHealthChecks("/bank/checks/health", new HealthCheckOptions()
             {

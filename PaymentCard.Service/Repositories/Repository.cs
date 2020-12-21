@@ -1,6 +1,7 @@
 ﻿using Bank.Service.Data;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace Bank.Service.Repositories
 
         public void Add(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+            _context.Set<TEntity>().AddOrUpdate(entity);
         }
 
 

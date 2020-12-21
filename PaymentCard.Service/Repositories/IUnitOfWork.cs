@@ -12,6 +12,7 @@ namespace Bank.Service.Repositories
         ICardRepository Cards { get; set; }
         IClientRepository Clients { get; set; }
         ITransactionRepository Transactions { get; set; }
+        IPaymentRepository Payments { get; set; }
         int Complete();
         Task<int> CompleteAsync();
     }

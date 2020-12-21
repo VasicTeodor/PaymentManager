@@ -1,4 +1,5 @@
-﻿using Bank.Service.Dto;
+﻿using Bank.Service.Data.Entities;
+using Bank.Service.Dto;
 using Bank.Service.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace Bank.Service.Services
     public interface IPaymentService
     {
         PaymentRequestResponseDto ValidatePayment(PaymentRequest request);
-        bool SubmitPayment(CardDto cardDto);
+        TransactionDto SubmitPayment(CardDto cardDto, Guid orderId);
     }
 }
