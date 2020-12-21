@@ -78,7 +78,7 @@ namespace Bank.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseConsul("bank");
+            app.UseConsul("bank");
             app.UseRouting();
             app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>
