@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using PayPal.Api;
 using PayPal.Service.Dtos;
 using PayPal.Service.Services.Interfaces;
+using Serilog;
 
 namespace PayPal.Service.Services
 {
@@ -36,14 +37,17 @@ namespace PayPal.Service.Services
             var apiContext = new APIContext(_accessToken)
             {
                 Config = GetPayPalCredentials()
-        };
+            };
+
+            var id = Guid.NewGuid().ToString();
 
             try
             {
                 Payment payment = new Payment()
                 {
-                    intent = "sale",
-                    payer = new Payer() { payment_method = "paypal" },
+                    id = id,
+                    intent = paymentRequest.PaymentIntent,
+                    payer = new Payer() { payment_method = paymentRequest.PaymentMethod },
                     transactions = new List<Transaction>()
                     {
                         new Transaction()
@@ -55,9 +59,9 @@ namespace PayPal.Service.Services
                                     new Item()
                                     {
                                         description = paymentRequest.Description,
-                                        name = paymentRequest.NameOfBook,
+                                        name = "PayPal payment by PaymentManager",
                                         currency = paymentRequest.Currency,
-                                        price = paymentRequest.Price.ToString("0.##", CultureInfo.InvariantCulture),
+                                        price = paymentRequest.Amount.ToString("0.##", CultureInfo.InvariantCulture),
                                         sku = "sku",
                                         quantity = "1"
                                     }
@@ -66,15 +70,15 @@ namespace PayPal.Service.Services
                             amount = new Amount()
                             {
                                 currency = paymentRequest.Currency,
-                                total = paymentRequest.Price.ToString("0.##" ,CultureInfo.InvariantCulture)
+                                total = paymentRequest.Amount.ToString("0.##" ,CultureInfo.InvariantCulture)
                             },
                             description = paymentRequest.Description
                         }
                     },
                     redirect_urls = new RedirectUrls()
                     {
-                        cancel_url = "https://localhost:5005/paypal/paypal/cancel",
-                        return_url = $"https://localhost:5005/paypal/paypal/success"
+                        cancel_url = paymentRequest.ErrorUrl,
+                        return_url = paymentRequest.SuccessUrl
                     }
                 };
 
@@ -103,10 +107,16 @@ namespace PayPal.Service.Services
             PaymentExecution paymentExecution = new PaymentExecution() { payer_id = payerId };
 
             Payment payment = new Payment() { id = paymentId };
-
-            Payment executedPayment = await Task.Run(() => payment.Execute(apiContext, paymentExecution));
-
-            return executedPayment;
+            try
+            {
+                Payment executedPayment = await Task.Run(() => payment.Execute(apiContext, paymentExecution));
+                return executedPayment;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return null;
+            }
         }
 
         private Dictionary<string, string> GetPayPalCredentials()

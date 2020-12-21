@@ -8,5 +8,6 @@ namespace PaymentManager.Api.Repository.Interfaces
     {
         Task<bool> SaveRequest(PaymentRequest paymentRequest);
         Task<PaymentRequest> GetRequestByMerchantOrderId(Guid merchantOrderId);
+        Task<PaymentRequest> GetRequestByPaymentRequestId(Guid paymentRequestId);
     }
 }

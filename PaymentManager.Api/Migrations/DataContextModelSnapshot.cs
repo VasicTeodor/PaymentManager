@@ -112,12 +112,10 @@ namespace PaymentManager.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MerchantPassword")
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MerchantUniqueId")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MerchantUniqueStoreId")
                         .HasColumnType("nvarchar(100)")
