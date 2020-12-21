@@ -40,7 +40,16 @@ namespace PayPal.Service
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
-            
+
+            // CORS Policy
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "https://www.sandbox.paypal.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
+
             // Register domain services and repositories
             services.AddScoped<IPayPalService, PayPalService>();
             services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
@@ -56,6 +65,8 @@ namespace PayPal.Service
 
             app.UseConsul("paypal");
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

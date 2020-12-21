@@ -27,5 +27,10 @@ namespace PaymentManager.Api.Repository
         {
             return await _context.PaymentRequests.FirstOrDefaultAsync(pr => pr.MerchantOrderId == merchantOrderId);
         }
+
+        public async Task<PaymentRequest> GetRequestByPaymentRequestId(Guid paymentRequestId)
+        {
+            return await _context.PaymentRequests.FirstOrDefaultAsync(pr => pr.Id == paymentRequestId);
+        }
     }
 }
