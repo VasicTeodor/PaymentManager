@@ -55,7 +55,7 @@ namespace Bank.Service.Services
             };
 
             //dodati i proveru datuma kasnije 
-            if (card.SecurityCode == cardDto.SecurityCode || card.HolderName.Equals(cardDto.HolderName))
+            if (card.SecurityCode != cardDto.SecurityCode || !card.HolderName.Equals(cardDto.HolderName))
             {
                 transaction.Status = "ERROR";
                 transactionDto.Status = "ERROR";
@@ -96,7 +96,7 @@ namespace Bank.Service.Services
             //inace vraca prazan sajt
             //napraviti payment objekat i odatle sve vuci na na kp back
             var payment = new Payment() {
-                Id = Guid.NewGuid(),
+                Id = request.MerchantOrderId,
                 Amount = request.Amount, 
                 Merchant=merchant.Account, 
                 Status="PAYMENT_CREATED", 

@@ -12,7 +12,7 @@ export class BankService {
 
   confirmPayment(formVal, orderId): Observable<any> {
     return this.http.post(
-      `${this.url}/payment/FrontPayment/${orderId}`,
+      `${this.url}/Payment/FrontPayment?Id=${orderId}`,
       formVal,
       {
         headers: new HttpHeaders({

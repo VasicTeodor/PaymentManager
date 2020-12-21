@@ -75,16 +75,17 @@ export class BankformComponent implements OnInit {
   }
 
   submitForm(form: NgForm) {
-    let send = { ...form.value, validTo: this.date.value.toString() };
+    let send = { ...form.value, validTo: this.date.value.toDate() };
 
-    console.log(send);
+    //console.log(send);
+    console.log(this.date.value.toDate());
     if (!form.valid || !this.date.valid) {
       console.log("nije validna forma");
       return false;
     } else {
       this.bankService.confirmPayment(send, this.orderId).subscribe(
         (data) => {
-          //form.reset();
+          form.reset();
           console.log(data);
         },
         (err) => {

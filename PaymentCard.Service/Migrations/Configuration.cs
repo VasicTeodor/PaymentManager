@@ -34,7 +34,7 @@
             context.Accounts.Add(buyerSuccessAccount);
             context.Accounts.Add(buyerFailureAccount);
             //context.SaveChanges();
-            var cardClientSeller = new Card() { Id = Guid.NewGuid(), HolderName = "Visa", Pan = "12345678", SecurityCode = 1234, ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = sellerAccount };
+            var cardClientSeller = new Card() { Id = Guid.NewGuid(), HolderName = "Visa", Pan = "123456789", SecurityCode = 1234, ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = sellerAccount };
             sellerAccount.Cards = new List<Card>() { cardClientSeller };
             var cardClientBuyerSuccesss = new Card() { Id = Guid.NewGuid(), HolderName = "Visa", Pan = "12345678", SecurityCode = 1111, ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = buyerSuccessAccount };
             buyerSuccessAccount.Cards = new List<Card>() { cardClientBuyerSuccesss };
