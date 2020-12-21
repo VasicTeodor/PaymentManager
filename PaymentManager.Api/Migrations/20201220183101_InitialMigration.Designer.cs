@@ -10,7 +10,7 @@ using PaymentManager.Api.Data;
 namespace PaymentManager.Api.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201220181110_InitialMigration")]
+    [Migration("20201220183101_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,12 +114,10 @@ namespace PaymentManager.Api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MerchantPassword")
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MerchantUniqueId")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MerchantUniqueStoreId")
                         .HasColumnType("nvarchar(100)")

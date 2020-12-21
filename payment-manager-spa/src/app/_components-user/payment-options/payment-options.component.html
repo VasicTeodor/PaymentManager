@@ -1,0 +1,13 @@
+<section>
+  <h1 class="header1">
+  ACME Corporation Payment Manager
+  </h1>
+  
+  <h2 class="header2">
+    Please chose some payment method:
+  </h2>
+  
+  <div class="text-center" *ngFor="let option of paymentOptions">
+    <button (click)="redirectToPayment(option)" class="bnt-option">{{option.name}}</button>
+  </div>
+</section>

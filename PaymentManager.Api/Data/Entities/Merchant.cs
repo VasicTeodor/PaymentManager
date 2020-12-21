@@ -8,9 +8,7 @@ namespace PaymentManager.Api.Data.Entities
     {
         public Guid Id { get; set; }
         public WebStore WebStore { get; set; }
-        [MaxLength(30)]
         public string MerchantPassword { get; set; }
-        [MaxLength(100)]
         public string MerchantUniqueId { get; set; }
         [MaxLength(100)]
         public string MerchantUniqueStoreId { get; set; }

@@ -16,6 +16,11 @@ import { PaymentServiceComponent } from './_components/payment-service/payment-s
 import { PaymentServicesService } from './_services/payment-services/payment-services.service';
 import { PaymentServicesResolver } from './_resolvers/payment-services.resolver';
 import { PaginationComponent } from './_components/pagination/pagination.component';
+import { PayPalComponent } from './_components-user/pay-pal/pay-pal.component';
+import { PaymentOptionsComponent } from './_components-user/payment-options/payment-options.component';
+import { PayPalResultComponent } from './_components-user/pay-pal-result/pay-pal-result.component';
+import { UserService } from './_services/user/user.service';
+import { PayPalFailedComponent } from './_components-user/pay-pal-failed/pay-pal-failed.component';
 
 export function getToken() {
   return localStorage.getItem('token');
@@ -28,7 +33,11 @@ export function getToken() {
     SideMenuComponent,
     WebShopComponent,
     PaymentServiceComponent,
-    PaginationComponent
+    PaginationComponent,
+    PayPalComponent,
+    PaymentOptionsComponent,
+    PayPalResultComponent,
+    PayPalFailedComponent
   ],
   imports: [
     JwtModule.forRoot({
@@ -49,6 +58,7 @@ export function getToken() {
     AuthService,
     ToastrService,
     PaymentServicesService,
+    UserService,
     PaymentServicesResolver
   ],
   bootstrap: [AppComponent]

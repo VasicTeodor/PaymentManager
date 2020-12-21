@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PaymentManager.Api.Data.Entities;
 using PaymentManager.Api.Dtos;
@@ -9,8 +10,11 @@ namespace PaymentManager.Api.Services.Interfaces
 {
     public interface IPaymentService
     {
-        Task<PaymentRequest> GeneratePaymentRequest(string merchantId, decimal amount);
+        Task<PaymentRequest> GeneratePaymentRequest(decimal amount, Guid orderId);
         Task<CompleteTransactionResult> CompleteTransaction(Transaction transaction);
-        Task<List<PaymentServiceDto>> GetPaymentOptions(string merchantStoreId);
+        Task<List<PaymentServiceDto>> GetPaymentOptions(Guid merchantId);
+        Task<List<PaymentServiceDto>> GetPaymentOptionsForOrder(Guid orderId);
+        Task<bool> SavePaymentRequest(RedirectDto redirectDto);
+        Task<Data.Entities.PaymentRequest> GetPaymentRequestDetails(Guid orderId);
     }
 }
