@@ -34,7 +34,7 @@ namespace Bank.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddConsulConfig(Configuration);
+            //services.AddConsulConfig(Configuration);
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
@@ -77,7 +77,7 @@ namespace Bank.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseConsul("bank");
+            //app.UseConsul("bank");
             app.UseRouting();
             app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>
