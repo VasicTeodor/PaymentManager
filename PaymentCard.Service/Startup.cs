@@ -10,6 +10,7 @@ using Bank.Service.Repositories.Implementations;
 using Bank.Service.Repositories.Interfaces;
 using Bank.Service.Services;
 using HealthChecks.UI.Client;
+using Infrastructure.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,7 @@ namespace Bank.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddConsulConfig(Configuration);
+            services.AddConsulConfig(Configuration);
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
