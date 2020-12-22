@@ -1,0 +1,29 @@
+.example-month-picker .mat-calendar-period-button {
+  pointer-events: none;
+}
+
+.example-month-picker .mat-calendar-arrow {
+  display: none;
+}
+
+.h1-align {
+  text-align: center;
+}
+
+.form-div {
+  display: block;
+  text-align: center;
+}
+
+form {
+  display: inline-block;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 15px;
+  background-color: silver;
+}
+
+.input {
+  margin-bottom: 10px;
+}

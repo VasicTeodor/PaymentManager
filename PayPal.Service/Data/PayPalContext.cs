@@ -7,14 +7,9 @@ namespace PayPal.Service.Data
     {
         public DbSet<PaymentRequest> PaymentRequests { get; set; }
 
-        public PayPalContext(DbContextOptions options): base(options)
+        public PayPalContext(DbContextOptions<PayPalContext> options): base(options)
         {
             
-        }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
         }
     }
 }

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using PayPal.Api;
+using PayPal.Service.Data.Entities;
 using PayPal.Service.Dtos;
+using PayPal.Service.Repository.Interfaces;
 using PayPal.Service.Services.Interfaces;
 using Serilog;
 
@@ -14,7 +17,8 @@ namespace PayPal.Service.Services
     public class PayPalService : IPayPalService
     {
         private string _accessToken;
-
+        private readonly IPaymentRequestRepository _repository;
+        private readonly IMapper _mapper;
         public IConfiguration Configuration { get; }
 
         public string Token
@@ -23,9 +27,11 @@ namespace PayPal.Service.Services
             set { _accessToken = value; }
         }
 
-        public PayPalService(IConfiguration configuration)
+        public PayPalService(IConfiguration configuration, IPaymentRequestRepository repository, IMapper mapper)
         {
             Configuration = configuration;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<Payment> CreatePayment(PaymentRequestDto paymentRequest)
@@ -84,6 +90,11 @@ namespace PayPal.Service.Services
 
                 createdPayment = await Task.Run(() => payment.Create(apiContext));
 
+                var paymentDb = _mapper.Map<PaymentRequest>(paymentRequest);
+
+                paymentDb.PaymentId = createdPayment.id;
+
+                await _repository.SaveRequest(paymentDb);
             }
             catch (Exception e)
             {

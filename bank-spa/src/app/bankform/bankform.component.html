@@ -1,0 +1,80 @@
+<h1 class="h1-align">Bank</h1>
+
+<div class="form-div">
+  <form #f="ngForm" (submit)="submitForm(f)" novalidate>
+    <div class="input">
+      <label class="custom-control-label" for="pan"
+        >Broj kreditne kartice:
+      </label>
+      <input
+        id="pan"
+        type="text"
+        class="custom-control-input"
+        value="pan"
+        name="pan"
+        ngModel
+        required
+      />
+    </div>
+
+    <div class="input">
+      <label class="custom-control-label" for="holderName"
+        >Ime vlasnika kartice:
+      </label>
+      <input
+        id="holderName"
+        type="text"
+        class="custom-control-input"
+        value="holderName"
+        name="holderName"
+        ngModel
+        required
+      />
+    </div>
+
+    <div class="input">
+      <label class="custom-control-label" for="securityCode">CVC: </label>
+      <input
+        style="margin-left: 111px"
+        id="securityCode"
+        type="text"
+        class="custom-control-input"
+        value="securityCode"
+        name="securityCode"
+        ngModel
+        required
+      />
+    </div>
+
+    <div class="input">
+      <label> Vazenje kartice: </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Vazi do</mat-label>
+        <input
+          matInput
+          [matDatepicker]="dp"
+          [formControl]="date"
+          required
+          name="validTo"
+        />
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker
+          #dp
+          startView="multi-year"
+          (yearSelected)="chosenYearHandler($event)"
+          (monthSelected)="chosenMonthHandler($event, dp)"
+          panelClass="example-month-picker"
+        >
+        </mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="f.invalid">
+      <p>Popunite sva polja obavezna su</p>
+    </div>
+
+    <button type="submit" style="display: block; margin: 0 auto">
+      Potvrdi
+    </button>
+  </form>
+</div>
