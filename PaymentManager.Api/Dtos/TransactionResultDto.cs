@@ -10,5 +10,10 @@ namespace PaymentManager.Api.Dtos
         public Guid AcquirerOrderId { get; set; }
         public DateTime AcquirerTimestamp { get; set; }
         public decimal Amount { get; set; }
+
+        public override string ToString()
+        {
+            return $"Transaction for merchant orderId: {MerchantOrderId} and amount: {Amount} with status {Status} ";
+        }
     }
 }

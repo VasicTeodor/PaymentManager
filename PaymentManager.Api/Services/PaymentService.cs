@@ -31,12 +31,13 @@ namespace PaymentManager.Api.Services
         /// <summary>
         /// Creates payment request for merchants bank
         /// </summary>
-        /// <param name="merchantId">unique id for merchant</param>
         /// <param name="amount">money amount for transaction</param>
+        /// <param name="orderId">order id from consumer application</param>
         /// <returns></returns>
-        public async Task<PaymentRequest> GeneratePaymentRequest(string merchantId, decimal amount)
+        public async Task<PaymentRequest> GeneratePaymentRequest(decimal amount, Guid orderId)
         {
-            var merchant = await _merchantRepository.GetMerchantByStoreUniqueId(merchantId);
+            var paymentRequestFromApp = await _paymentRequestRepository.GetRequestByMerchantOrderId(orderId);
+            var merchant = await _merchantRepository.GetMerchantById(paymentRequestFromApp.MerchantId, true);
 
             var paymentRequest = new PaymentRequest
             {
@@ -45,17 +46,17 @@ namespace PaymentManager.Api.Services
                 SuccessUrl = merchant.WebStore.SuccessUrl,
                 ErrorUrl = merchant.WebStore.ErrorUrl,
                 FailedUrl = merchant.WebStore.FailureUrl,
-                MerchantOrderId = Guid.NewGuid(),
-                Amount = amount,
-                MerchantTimestamp = DateTime.UtcNow
+                MerchantOrderId = paymentRequestFromApp.Id,
+                Amount = amount == 0? paymentRequestFromApp.Amount : amount,
+                MerchantTimestamp = paymentRequestFromApp.MerchantTimestamp
             };
 
             Log.Information($"PAYMENT REQUEST CREATED: {paymentRequest}");
 
-            var paymentRequestDb = _mapper.Map<Data.Entities.PaymentRequest>(paymentRequest);
+            //var paymentRequestDb = _mapper.Map<Data.Entities.PaymentRequest>(paymentRequest);
 
-            paymentRequestDb.MerchantId = merchant.Id;
-            await _paymentRequestRepository.SaveRequest(paymentRequestDb);
+            //paymentRequestDb.MerchantId = merchant.Id;
+            //await _paymentRequestRepository.SaveRequest(paymentRequestDb);
 
             return paymentRequest;
         }
@@ -67,7 +68,6 @@ namespace PaymentManager.Api.Services
         /// <returns></returns>
         public async Task<CompleteTransactionResult> CompleteTransaction(Transaction transaction)
         {
-            Log.Information($"FINISHING TRANSACTION: {transaction}");
             var paymentRequest =
                 await _paymentRequestRepository.GetRequestByMerchantOrderId(transaction.MerchantOrderId);
 
@@ -75,6 +75,7 @@ namespace PaymentManager.Api.Services
 
             var isSaved = await _transactionRepository.SaveTransaction(transaction);
 
+            Log.Information($"FINISHING TRANSACTION: {transaction}");
             var result = new CompleteTransactionResult()
             {
                 IsSaved = isSaved,
@@ -84,14 +85,66 @@ namespace PaymentManager.Api.Services
             return result;
         }
 
-        public async Task<List<PaymentServiceDto>> GetPaymentOptions(string merchantStoreId)
+        /// <summary>
+        /// Returns payment request for order Id
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        public async Task<Data.Entities.PaymentRequest> GetPaymentRequestDetails(Guid orderId)
+        {
+            return await _paymentRequestRepository.GetRequestByPaymentRequestId(orderId);
+        }
+
+        /// <summary>
+        /// Gets payment options for merchant id
+        /// </summary>
+        /// <param name="merchantStoreId"></param>
+        /// <returns></returns>
+        public async Task<List<PaymentServiceDto>> GetPaymentOptions(Guid merchantStoreId)
         {
             Log.Information($"Getting payment options for merchant: {merchantStoreId}");
-            var merchant = await _merchantRepository.GetMerchantByStoreUniqueId(merchantStoreId);
+            var merchant = await _merchantRepository.GetMerchantById(merchantStoreId);
             var paymentServices = merchant.PaymentServices.Select(ps => ps.PaymentService).ToList();
             var paymentOptions = _mapper.Map<List<PaymentServiceDto>>(paymentServices);
 
             return paymentOptions;
+        }
+
+        /// <summary>
+        /// Gets payment options for orderId id
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        public async Task<List<PaymentServiceDto>> GetPaymentOptionsForOrder(Guid orderId)
+        {
+            Log.Information($"Getting payment options for order with payment request id: {orderId}");
+            var order = await _paymentRequestRepository.GetRequestByPaymentRequestId(orderId);
+            var merchant = await _merchantRepository.GetMerchantById(order.MerchantId);
+            var paymentServices = merchant.PaymentServices.Select(ps => ps.PaymentService).ToList();
+            var paymentOptions = _mapper.Map<List<PaymentServiceDto>>(paymentServices);
+
+            return paymentOptions;
+        }
+
+        /// <summary>
+        /// Saving payment request from consumer application
+        /// </summary>
+        /// <param name="redirectDto"></param>
+        /// <returns></returns>
+        public async Task<bool> SavePaymentRequest(RedirectDto redirectDto)
+        {
+            var paymentRequest = new Data.Entities.PaymentRequest
+            {
+                MerchantId = redirectDto.MerchantId,
+                MerchantOrderId = redirectDto.OrderId,
+                Amount = redirectDto.Amount,
+                Id = redirectDto.OrderId,
+                MerchantTimestamp = DateTime.UtcNow
+            };
+
+            var result = await _paymentRequestRepository.SaveRequest(paymentRequest);
+
+            return result;
         }
 
 

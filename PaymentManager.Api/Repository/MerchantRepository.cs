@@ -35,30 +35,28 @@ namespace PaymentManager.Api.Repository
                     .Skip(pageSize * (pageNumber - 1))
                     .Take(pageSize).ToListAsync()
             };
-
-            result.Items.ForEach(merchant =>
-                {
-                    merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
-                    merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
-                });
             return result;
         }
 
-        public async Task<Merchant> GetMerchant(string merchantUniqueId)
+        public async Task<Merchant> GetMerchant(string merchantUniqueId, bool decrypt = false)
         {
+            var chipMerchantUniqueId = _cryptographyService.EncryptStringAes(merchantUniqueId);
             var merchant = await _context.Merchants
                 .Include(m => m.PaymentServices)
                 .ThenInclude(ps => ps.PaymentService)
                 .Include(m => m.WebStore)
-                .FirstOrDefaultAsync(m => m.MerchantUniqueId == merchantUniqueId);
+                .FirstOrDefaultAsync(m => m.MerchantUniqueId == chipMerchantUniqueId);
 
-            merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
-            merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            if (merchant != null && decrypt)
+            {
+                merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
+                merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            }
 
             return merchant;
         }
 
-        public async Task<Merchant> GetMerchantByStoreUniqueId(string merchantStoreUniqueId)
+        public async Task<Merchant> GetMerchantByStoreUniqueId(string merchantStoreUniqueId, bool decrypt = false)
         {
             var merchant = await _context.Merchants
                 .Include(m => m.PaymentServices)
@@ -66,13 +64,16 @@ namespace PaymentManager.Api.Repository
                 .Include(m => m.WebStore)
                 .FirstOrDefaultAsync(m => m.MerchantUniqueStoreId == merchantStoreUniqueId);
 
-            merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
-            merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            if (merchant != null && decrypt)
+            {
+                merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
+                merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            }
 
             return merchant;
         }
 
-        public async Task<Merchant> GetMerchantById(Guid id)
+        public async Task<Merchant> GetMerchantById(Guid id, bool decrypt = false)
         {
             var merchant = await _context.Merchants
                 .Include(m => m.WebStore)
@@ -80,8 +81,11 @@ namespace PaymentManager.Api.Repository
                 .ThenInclude(ps => ps.PaymentService)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
-            merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            if (merchant != null && decrypt)
+            {
+                merchant.MerchantUniqueId = _cryptographyService.DecryptStringAes(merchant.MerchantUniqueId);
+                merchant.MerchantPassword = _cryptographyService.DecryptStringAes(merchant.MerchantPassword);
+            }
 
             return merchant;
         }

@@ -2,14 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Bank.Service.Data;
+using Bank.Service.Helpers;
+using Bank.Service.Repositories;
+using Bank.Service.Repositories.Implementations;
+using Bank.Service.Repositories.Interfaces;
+using Bank.Service.Services;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
-using Infrastructure.Service.Interface;
-using Infrastructure.Service.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,18 +36,48 @@ namespace Bank.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BankDbContext>(x =>
+                x.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
+
             services.AddConsulConfig(Configuration);
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy1",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
 
             // Register Services
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+            services.AddScoped<BankDbContext>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<ICardRepository, CardRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
+            // Register Mapper
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapperProfiles());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            // Register Seed Class
+            services.AddTransient<Seed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seed)
         {
             if (env.IsDevelopment())
             {
@@ -50,11 +86,13 @@ namespace Bank.Service
 
             app.UseConsul("bank");
             app.UseRouting();
-
+            app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            seed.SeedData();
 
             app.UseHealthChecks("/bank/checks/health", new HealthCheckOptions()
             {

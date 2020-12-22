@@ -1,0 +1,50 @@
+<section>
+  <h1 style="text-align: center; margin-top: 0px; font-size: 35px;">
+  ACME Corporation Payment Manager
+  </h1>
+  
+  <h2 style="text-align: center; margin-bottom: 50px;">
+    Please fill in form to continue:
+  </h2>
+</section>
+<div class="text-center">
+  <form [formGroup]="paypalForm" (ngSubmit)="formData()">
+    <div>
+      <hr>
+      <div>
+        <div>
+          <span id="amount">Amount</span>
+        </div>
+        <input type="number" formControlName="amount" readonly aria-label="Amount" min="0">
+      </div>
+      <div>
+        <div>
+          <span id="currency">Currency</span>
+        </div>
+        <input type="text" formControlName="currency" aria-label="Currency">
+      </div>
+      <div>
+        <div>
+          <span id="description">Description</span>
+        </div>
+        <input type="text" formControlName="description" aria-label="Description">
+      </div>
+      <div>
+        <div>
+          <span id="intent">Intent</span>
+        </div>
+        <input type="text" formControlName="intent" aria-label="Intent" readonly>
+      </div>
+      <div>
+        <div>
+          <span id="paymentMethod">Payment method</span>
+        </div>
+        <input type="text" formControlName="paymentMethod" aria-label="PaymentMethod" readonly >
+      </div>
+      <hr>
+      <button type="submit">Submit</button>
+      <hr>
+    </div>
+  </form>
+  <button type="button" (click)="confirm()" *ngIf="isVisible">Confirm</button>
+</div>

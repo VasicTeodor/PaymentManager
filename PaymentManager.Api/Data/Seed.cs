@@ -14,6 +14,8 @@ namespace PaymentManager.Api.Data
         private readonly RoleManager<Role> _roleManager;
         private readonly DataContext _context;
         private readonly ISecurityCryptographyService _cryptographyService;
+        private readonly Guid _webStoreId = Guid.Parse("54a0924b-200a-4efc-a6ac-ff21873c3b37");
+        private readonly Guid _merchantId = Guid.Parse("5A25F89F-1294-426F-917C-08D8A515D437");
 
         public Seed(UserManager<User> userManager, RoleManager<Role> roleManager, DataContext context, ISecurityCryptographyService cryptographyService)
         {
@@ -104,6 +106,7 @@ namespace PaymentManager.Api.Data
             {
                 var merchant = new Merchant
                 {
+                    Id = _merchantId,
                     MerchantUniqueId = "UniqueMerchantId123",
                     MerchantPassword = "UniqueMerchantPassword@123",
                     MerchantUniqueStoreId = $"PublishingCompany01Merchant3212"
@@ -150,6 +153,7 @@ namespace PaymentManager.Api.Data
             {
                 var webStore = new WebStore()
                 {
+                    Id = _webStoreId,
                     ErrorUrl = "http://localhost:3000/paymenterror",
                     FailureUrl = "http://localhost:3000/paymentfailure",
                     SuccessUrl = "http://localhost:3000/paymentsuccess",
