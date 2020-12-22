@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace Bank.Service.Data.Entities
         public Guid Id { get; set; }
         [Url]
         public string Url { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal Amount { get; set; }
         public string Status { get; set; }
         [Url]

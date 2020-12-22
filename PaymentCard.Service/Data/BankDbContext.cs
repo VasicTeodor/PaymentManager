@@ -1,16 +1,17 @@
 ﻿using Bank.Service.Data.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bank.Service.Data
 {
     public class BankDbContext : DbContext
     {
-        public BankDbContext()
+        public BankDbContext(DbContextOptions<BankDbContext> options) : base(options)
         {
+
         }
 
         public DbSet<Account> Accounts { get; set; }

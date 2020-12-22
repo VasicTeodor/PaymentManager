@@ -1,9 +1,7 @@
 ﻿using Bank.Service.Data;
-using System;
 using System.Collections.Generic;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bank.Service.Repositories
 {
@@ -18,7 +16,7 @@ namespace Bank.Service.Repositories
 
         public void Add(TEntity entity)
         {
-            _context.Set<TEntity>().AddOrUpdate(entity);
+            _context.Set<TEntity>().Add(entity);
         }
 
 
@@ -41,7 +39,7 @@ namespace Bank.Service.Repositories
         public void Update(TEntity entity)
         {
             _context.Set<TEntity>().Attach(entity);
-            _context.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
     }

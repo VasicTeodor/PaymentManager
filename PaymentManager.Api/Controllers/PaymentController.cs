@@ -47,7 +47,7 @@ namespace PaymentManager.Api.Controllers
                 await _paymentService.GeneratePaymentRequest(paymentRequestDto.Amount, paymentRequestDto.OrderId);
 
             Log.Information($"SENDING PAYMENT REQUEST: {paymentRequest.ToString()}");
-            var result = await _restClient.PostRequest<PaymentRequestResponseDto>(paymentRequestDto.PaymentServiceUrl, paymentRequest);
+            var result = await _restClient.PostRequest<PaymentRequestResponseDto>(paymentRequestDto.PaymentServiceUrl+ "payment/CheckPaymentRequest", paymentRequest);
 
             if (result == null || result.PaymentId == Guid.Empty || string.IsNullOrEmpty(result.PaymentUrl))
             {
@@ -72,7 +72,10 @@ namespace PaymentManager.Api.Controllers
 
             Log.Information($"TRANSACTION FINISHED: {transactionResultDto}");
             Log.Information($"Redirecting user: {result.UrlForRedirection}");
-            return RedirectPermanent(result.UrlForRedirection);
+            return Ok(new
+            {
+                redirectUrl = result.UrlForRedirection
+            });
         }
 
         [HttpGet]

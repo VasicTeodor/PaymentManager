@@ -37,7 +37,7 @@ namespace PaymentManager.Api.Services
         public async Task<PaymentRequest> GeneratePaymentRequest(decimal amount, Guid orderId)
         {
             var paymentRequestFromApp = await _paymentRequestRepository.GetRequestByMerchantOrderId(orderId);
-            var merchant = await _merchantRepository.GetMerchantById(paymentRequestFromApp.MerchantId);
+            var merchant = await _merchantRepository.GetMerchantById(paymentRequestFromApp.MerchantId, true);
 
             var paymentRequest = new PaymentRequest
             {
@@ -68,7 +68,6 @@ namespace PaymentManager.Api.Services
         /// <returns></returns>
         public async Task<CompleteTransactionResult> CompleteTransaction(Transaction transaction)
         {
-            Log.Information($"FINISHING TRANSACTION: {transaction}");
             var paymentRequest =
                 await _paymentRequestRepository.GetRequestByMerchantOrderId(transaction.MerchantOrderId);
 
@@ -76,6 +75,7 @@ namespace PaymentManager.Api.Services
 
             var isSaved = await _transactionRepository.SaveTransaction(transaction);
 
+            Log.Information($"FINISHING TRANSACTION: {transaction}");
             var result = new CompleteTransactionResult()
             {
                 IsSaved = isSaved,

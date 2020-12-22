@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bank.Service.Repositories.Implementations
 {
@@ -19,12 +20,12 @@ namespace Bank.Service.Repositories.Implementations
 
         public Payment GetPaymentByOrderId(Guid orderId)
         {
-            return _context.Payments.Where(p => p.Id.Equals(orderId)).FirstOrDefault();
+            return _context.Payments.Include(p => p.Merchant).FirstOrDefault(p => p.Id.Equals(orderId));
         }
 
         public Payment GetPaymentByUrl(string url)
         {
-            return _context.Payments.Where(p => p.Url.Equals(url)).FirstOrDefault();
+            return _context.Payments.Include(p => p.Merchant).FirstOrDefault(p => p.Url.Equals(url));
         }
     }
 }

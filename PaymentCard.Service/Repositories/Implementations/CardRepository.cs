@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bank.Service.Repositories.Implementations
 {
@@ -19,7 +20,7 @@ namespace Bank.Service.Repositories.Implementations
 
         public Card GetCardByPan(string pan)
         {
-            return _context.Cards.Where(x => x.Pan.Equals(pan)).FirstOrDefault();
+            return _context.Cards.Include(c => c.Account).FirstOrDefault(x => x.Pan.Equals(pan));
         }
     }
 }

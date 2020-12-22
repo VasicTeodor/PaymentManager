@@ -20,7 +20,7 @@ namespace PayPal.Service
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.File($@"Logs\PayPalService-{DateTime.UtcNow}.log")
+                .WriteTo.File($@"Logs\PayPalService.log")
                 .CreateLogger();
 
             try

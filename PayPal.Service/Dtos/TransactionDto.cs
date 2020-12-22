@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PaymentManager.Api.Dtos
+namespace PayPal.Service.Dtos
 {
-    public class TransactionResultDto
+    public class TransactionDto
     {
         public Guid MerchantOrderId { get; set; }
         public Guid PaymentId { get; set; }
@@ -10,10 +10,5 @@ namespace PaymentManager.Api.Dtos
         public Guid AcquirerOrderId { get; set; }
         public DateTime AcquirerTimestamp { get; set; }
         public decimal Amount { get; set; }
-
-        public override string ToString()
-        {
-            return $"Transaction for merchant orderId: {MerchantOrderId} and amount: {Amount} with status {Status} ";
-        }
     }
 }

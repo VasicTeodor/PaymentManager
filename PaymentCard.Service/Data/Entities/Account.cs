@@ -11,6 +11,7 @@ namespace Bank.Service.Data.Entities
     {
         [ForeignKey("Client")]
         public Guid Id { get; set; }
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal Amount { get; set; }
         public virtual Client Client { get; set; }
         public virtual ICollection<Card> Cards { get; set; }

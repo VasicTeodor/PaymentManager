@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Builder;
@@ -14,10 +15,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PayPal.Service.Data;
+using PayPal.Service.Helpers;
 using PayPal.Service.Repository;
 using PayPal.Service.Repository.Interfaces;
 using PayPal.Service.Services;
 using PayPal.Service.Services.Interfaces;
+using RestSharp;
 
 namespace PayPal.Service
 {
@@ -53,6 +56,16 @@ namespace PayPal.Service
             // Register domain services and repositories
             services.AddScoped<IPayPalService, PayPalService>();
             services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
+            services.AddScoped<IRestClient, RestClient>();
+            services.AddScoped<IGenericRestClient, GenericRestClient>();
+
+            // Register Mapper
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapperProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

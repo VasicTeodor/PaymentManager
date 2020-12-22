@@ -16,6 +16,7 @@ namespace PayPal.Service.Data.Entities
         public string SuccessUrl { get; set; }
         public string ErrorUrl { get; set; }
         public Guid OrderId { get; set; }
+        public string PaymentId { get; set; }
         [Timestamp]
         public byte[] TableVersion { get; set; }
     }

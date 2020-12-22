@@ -47,6 +47,7 @@ export class PayPalResultComponent implements OnInit {
       this.userService.payPalExecutePayment(executePayment, this.serviceUrl).subscribe(
         (val) => {
           this.error = false;
+          window.open(val.redirectUrl, "_self");
           console.log("Execute payment call successful value returned in body", val);
         },
         (response) => {
@@ -56,7 +57,6 @@ export class PayPalResultComponent implements OnInit {
         },
         () => {
           console.log("The Execute payment observable is now completed.");
-          window.open('localhost:4200/paypal', "_self");
         });
     }
   }

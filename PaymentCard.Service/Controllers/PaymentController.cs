@@ -15,7 +15,7 @@ namespace Bank.Service.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IGenericRestClient _restClient;
-        private string paymentManagerApiUrl = "http://localhost:11284/";
+        private string paymentManagerApiUrl = "https://localhost:5021/api/payment/";
 
         public PaymentController(IPaymentService paymentService, IGenericRestClient restClient)
         {
@@ -57,7 +57,7 @@ namespace Bank.Service.Controllers
             Log.Information($"Bank service reveived user payment request from bank");
             var transportDto = _paymentService.SubmitPayment(cardDto, Id);
             Log.Information($"Bank service sending Transaction data to PaymentManager to finish transaction");
-            var callPaymentManager = await _restClient.PostRequest<TransactionDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
+            var callPaymentManager = await _restClient.PostRequest<RedirectDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
             return Ok(callPaymentManager);
         }
     }

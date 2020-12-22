@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bank.Service.Repositories.Implementations
 {
@@ -18,7 +19,7 @@ namespace Bank.Service.Repositories.Implementations
 
         public Client FindByPayerId(string merchantId)
         {
-            return _context.Clients.Where(x => x.MerchantId.Equals(merchantId)).FirstOrDefault();
+            return _context.Clients.Include(c => c.Account).FirstOrDefault(x => x.MerchantId.Equals(merchantId));
         }
     }
 }

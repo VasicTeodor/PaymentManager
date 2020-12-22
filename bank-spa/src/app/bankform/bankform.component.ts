@@ -86,6 +86,7 @@ export class BankformComponent implements OnInit {
       this.bankService.confirmPayment(send, this.orderId).subscribe(
         (data) => {
           form.reset();
+          window.open(data.redirectUrl,"_self");
           console.log(data);
         },
         (err) => {

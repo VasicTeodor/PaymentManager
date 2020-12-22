@@ -19,9 +19,9 @@ namespace Bank.Service
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug().MinimumLevel
                 .Override("Microsoft", LogEventLevel.Information).Enrich
-                .FromLogContext().WriteTo
-                .Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({SourceContext}) {Message}{NewLine}{Exception}").WriteTo
-                .File($@"Logs\BankService-{DateTime.UtcNow}.log", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level}] ({SourceContext}) {Message}{NewLine}{Exception}")
+                .FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.File($@"Logs\BankService.log")
                 .CreateLogger();
 
             try
