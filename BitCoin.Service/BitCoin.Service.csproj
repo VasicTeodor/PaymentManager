@@ -16,5 +16,11 @@
     <ProjectReference Include="..\Infrastructure.Service\Infrastructure.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Repository\" />
+  </ItemGroup>
+
 
 </Project>

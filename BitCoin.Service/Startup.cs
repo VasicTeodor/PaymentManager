@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BitCoin.Service.Services;
+using BitCoin.Service.Services.Interfaces;
 using HealthChecks.UI.Client;
 using Infrastructure.Service;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RestSharp;
 
 namespace BitCoin.Service
 {
@@ -31,6 +34,20 @@ namespace BitCoin.Service
             services.AddControllers();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+
+            // CORS Policy
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "https://www.sandbox.coingate.com")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowAnyOrigin());
+            });
+
+            // Register domain services and repositories
+            services.AddScoped<ICoingateService, CoingateService>();
+            services.AddScoped<IRestClient, RestClient>();
+            services.AddScoped<IGenericRestClient, GenericRestClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +60,8 @@ namespace BitCoin.Service
 
             app.UseConsul("bitcoin");
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

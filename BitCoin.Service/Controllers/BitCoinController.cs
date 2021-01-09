@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BitCoin.Service.Models;
+using BitCoin.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +13,12 @@ namespace BitCoin.Service.Controllers
     [ApiController]
     public class BitCoinController : ControllerBase
     {
+        private readonly ICoingateService _coingateService;
+        public BitCoinController(ICoingateService coingateService)
+        {
+            _coingateService = coingateService;
+        }
+
         // GET api/values  
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
@@ -27,6 +35,15 @@ namespace BitCoin.Service.Controllers
             var port = Request.Host.Port;
 
             return Ok(String.Join(", ", new string[] { "Payment via Bitcoin", "Bitcoin.Service", $"ID received {id}", port.Value.ToString() }));
+        }
+
+        [HttpPost]
+        [Route("create-payment")]
+        public async Task<IActionResult> CreatePayment(Order order)
+        {
+            var orderResult = await _coingateService.CreatePayment(order);
+
+            return Ok(orderResult);
         }
     }
 }
