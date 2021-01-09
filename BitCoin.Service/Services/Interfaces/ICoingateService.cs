@@ -1,4 +1,5 @@
-﻿using BitCoin.Service.Models;
+﻿using BitCoin.Service.Dtos;
+using BitCoin.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace BitCoin.Service.Services.Interfaces
 {
     public interface ICoingateService
     {
-        Task<dynamic> CreatePayment(Order order);
+        Task<dynamic> CreatePayment(OrderDto order);
     }
 }

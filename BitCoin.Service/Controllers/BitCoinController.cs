@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BitCoin.Service.Dtos;
 using BitCoin.Service.Models;
 using BitCoin.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +40,7 @@ namespace BitCoin.Service.Controllers
 
         [HttpPost]
         [Route("create-payment")]
-        public async Task<IActionResult> CreatePayment(Order order)
+        public async Task<IActionResult> CreatePayment(OrderDto order)
         {
             var orderResult = await _coingateService.CreatePayment(order);
 

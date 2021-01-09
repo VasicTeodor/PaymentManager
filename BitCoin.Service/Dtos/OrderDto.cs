@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BitCoin.Service.Models
+namespace BitCoin.Service.Dtos
 {
-    public class Order
+    public class OrderDto
     {
-        public Guid Id { get; set; }
         public string OrderId { get; set; }
         public double PriceAmount { get; set; }
         public string PriceCurrency { get; set; }
@@ -20,7 +17,16 @@ namespace BitCoin.Service.Models
         public string CancelUrl { get; set; }
         public string SuccessUrl { get; set; }
         public string Token { get; set; }
-        [Timestamp]
-        public byte[] TableVersion { get; set; }
+
+        //public string order_id { get; set; }
+        //public double price_amount { get; set; }
+        //public string price_currency { get; set; }
+        //public string receive_currency { get; set; }
+        //public string title { get; set; }
+        //public string description { get; set; }
+        //public string callback_url { get; set; }
+        //public string cancel_url { get; set; }
+        //public string success_url { get; set; }
+        //public string token { get; set; }
     }
 }

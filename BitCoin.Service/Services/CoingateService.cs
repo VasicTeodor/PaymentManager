@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Net;
 using System.Text.Json;
+using BitCoin.Service.Repository.Interfaces;
+using AutoMapper;
+using BitCoin.Service.Dtos;
 
 namespace BitCoin.Service.Services
 {
@@ -20,12 +23,16 @@ namespace BitCoin.Service.Services
         private readonly int _nonce;
         private readonly string _baseUri;
         private readonly HttpClient _client;
+        private readonly IOrderRepository _repository;
+        private readonly IMapper _mapper;
 
         //private readonly IGenericRestClient _genericRestClient;
         private readonly IConfiguration _configuration;
-        public CoingateService(IConfiguration configuration)
+        public CoingateService(IConfiguration configuration, IOrderRepository repository, IMapper mapper)
         {
             _configuration = configuration;
+            _repository = repository;
+            _mapper = mapper;
             _client = new HttpClient();
             _api_key = _configuration.GetSection("CoingateToken").Value;
             _api_secret = _configuration.GetSection("ApiSecret").Value;
@@ -34,7 +41,7 @@ namespace BitCoin.Service.Services
             _nonce = DateTime.Now.Second;
         }
 
-        public async Task<dynamic> CreatePayment(Order order)
+        public async Task<dynamic> CreatePayment(OrderDto order)
         {
             string resourcePath = "/v2/orders/";
 
@@ -43,20 +50,26 @@ namespace BitCoin.Service.Services
 
             var body = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("order_id", order.order_id),
-                new KeyValuePair<string, string>("price_amount", order.price_amount.ToString()),
-                new KeyValuePair<string, string>("price_currency", order.price_currency),
-                new KeyValuePair<string, string>("receive_currency", order.receive_currency),
-                new KeyValuePair<string, string>("title", order.title),
-                new KeyValuePair<string, string>("description", order.description),
-                new KeyValuePair<string, string>("callback_url", order.callback_url),
-                new KeyValuePair<string, string>("cancel_url", order.cancel_url),
-                new KeyValuePair<string, string>("success_url", order.success_url)
+                new KeyValuePair<string, string>("order_id", order.OrderId),
+                new KeyValuePair<string, string>("price_amount", order.PriceAmount.ToString()),
+                new KeyValuePair<string, string>("price_currency", order.PriceCurrency),
+                new KeyValuePair<string, string>("receive_currency", order.ReceiveCurrency),
+                new KeyValuePair<string, string>("title", order.Title),
+                new KeyValuePair<string, string>("description", order.Description),
+                new KeyValuePair<string, string>("callback_url", order.CallbackUrl),
+                new KeyValuePair<string, string>("cancel_url", order.CancelUrl),
+                new KeyValuePair<string, string>("success_url", order.SuccessUrl)
             });
 
             var response = await _client.PostAsync(resourcePath, body);
             if (!response.IsSuccessStatusCode) return HttpStatusCode.BadRequest;
-            var result = await JsonSerializer.DeserializeAsync<OrderResult>(await response.Content.ReadAsStreamAsync());
+            var result = await JsonSerializer.DeserializeAsync<OrderResultDto>(await response.Content.ReadAsStreamAsync());
+
+            var orderResultDb = _mapper.Map<OrderResult>(result);
+            var orderDb = _mapper.Map<Order>(order);
+
+            await _repository.SaveOrderResult(orderResultDb);
+            await _repository.SaveOrder(orderDb);
             return result;
         }
 
