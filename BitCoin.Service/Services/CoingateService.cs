@@ -14,6 +14,7 @@ using System.Text.Json;
 using BitCoin.Service.Repository.Interfaces;
 using AutoMapper;
 using BitCoin.Service.Dtos;
+using Serilog;
 
 namespace BitCoin.Service.Services
 {
@@ -62,7 +63,11 @@ namespace BitCoin.Service.Services
             });
 
             var response = await _client.PostAsync(resourcePath, body);
-            if (!response.IsSuccessStatusCode) return HttpStatusCode.BadRequest;
+            if (!response.IsSuccessStatusCode)
+            {
+                Log.Information("Payment creation declined.");
+                return HttpStatusCode.BadRequest;
+            }
             var result = await JsonSerializer.DeserializeAsync<OrderResultDto>(await response.Content.ReadAsStreamAsync());
 
             var orderResultDb = _mapper.Map<OrderResult>(result);
@@ -70,6 +75,9 @@ namespace BitCoin.Service.Services
 
             await _repository.SaveOrderResult(orderResultDb);
             await _repository.SaveOrder(orderDb);
+
+            Log.Information("Payment created successfully.");
+
             return result;
         }
 

@@ -7,6 +7,7 @@ using BitCoin.Service.Models;
 using BitCoin.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace BitCoin.Service.Controllers
 {
@@ -42,9 +43,20 @@ namespace BitCoin.Service.Controllers
         [Route("create-payment")]
         public async Task<IActionResult> CreatePayment(OrderDto order)
         {
+            Log.Information("Received request for payment with bitcoin");
             var orderResult = await _coingateService.CreatePayment(order);
 
-            return Ok(orderResult);
+            if (orderResult != null)
+            {
+
+                Log.Information("Payment created, sending payment links back to client");
+                return Ok(orderResult);
+            }
+
+            Log.Information("Payment creation declined, there was error while creating payment");
+            return BadRequest("Your Coingate account is not verificated!");
+
+            
         }
     }
 }
