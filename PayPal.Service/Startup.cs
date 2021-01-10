@@ -56,8 +56,13 @@ namespace PayPal.Service
             // Register domain services and repositories
             services.AddScoped<IPayPalService, PayPalService>();
             services.AddScoped<IPaymentRequestRepository, PaymentRequestRepository>();
+            services.AddScoped<ISubscriptionRequestsRepository, SubscriptionRequestsRepository>();
+            services.AddScoped<IExecutedSubscriptionRepository, ExecutedSubscriptionRepository>();
+            services.AddScoped<IBillingPlanRequestRepository, BillingPlanRequestRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+            services.AddScoped<ISubscriptionService, SubscriptionService>();
 
             // Register Mapper
             var mappingConfig = new MapperConfiguration(mc =>

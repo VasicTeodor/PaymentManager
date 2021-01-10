@@ -47,6 +47,9 @@ export class PaymentOptionsComponent implements OnInit {
     if(paymentOption.name === 'PayPal') {
       localStorage.setItem('PayPalUrl', paymentOption.url);
       this.router.navigate([`/paypal/${this.orderId}`])
+    } else {
+      localStorage.setItem('BitCoinUrl', paymentOption.url);
+      this.router.navigate([`/crypto/${this.orderId}`])
     }
   }
 

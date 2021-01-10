@@ -38,4 +38,8 @@ export class UserService {
   payPalExecutePayment(payPalExecuteRequest: any, serviceUrl: string | null) {
     return this.http.post<any>(serviceUrl + 'paypal/executepayment', payPalExecuteRequest);
   }
+
+  bitCoinExecutePayment(cryptoRequest: any, serviceUrl: string) {
+    return this.http.post<any>(serviceUrl + 'bitcoin/', cryptoRequest);
+  }
 }

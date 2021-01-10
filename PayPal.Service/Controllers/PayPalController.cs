@@ -17,16 +17,18 @@ namespace PayPal.Service.Controllers
     public class PayPalController : ControllerBase
     {
         private readonly IPayPalService _payPalService;
+        private readonly ISubscriptionService _subscriptionService;
         private readonly IGenericRestClient _restClient;
         private readonly IPaymentRequestRepository _repository;
         private readonly IConfiguration _configuration;
 
-        public PayPalController(IPayPalService payPalService, IGenericRestClient restClient, IPaymentRequestRepository repository, IConfiguration configuration)
+        public PayPalController(IPayPalService payPalService, IGenericRestClient restClient, IPaymentRequestRepository repository, IConfiguration configuration, ISubscriptionService subscriptionService)
         {
             _payPalService = payPalService;
             _restClient = restClient;
             _repository = repository;
             _configuration = configuration;
+            _subscriptionService = subscriptionService;
         }
 
         [HttpPost]
@@ -94,8 +96,72 @@ namespace PayPal.Service.Controllers
                 Log.Information("Sending transaction result to payment manager");
                 return Ok(paymentManagerResponse);
             }
+            else
+            {
+                var request = await _repository.GetPaymentRequest(paymentExecuteDto.PaymentId);
 
-            return BadRequest("There was an error");
+                var transaction = new TransactionDto()
+                {
+                    Amount = request.Amount,
+                    PaymentId = request.Id,
+                    MerchantOrderId = request.OrderId,
+                    Status = "FAILURE",
+                    AcquirerOrderId = Guid.NewGuid(),
+                    AcquirerTimestamp = DateTime.UtcNow
+                };
+
+                var paymentManagerResponse = await _restClient.PostRequest<RedirectDto>($"{paymentManagerUrl}{actionUrl}", transaction);
+                Log.Information("Sending transaction result to payment manager");
+                return Ok(paymentManagerResponse);
+            }
+        }
+
+        [HttpPost]
+        [Route("billingplan/create")]
+        public async Task<IActionResult> CreateBillingPlan(BillingPlanRequestDto billingPlanRequest)
+        {
+            var plan = await _subscriptionService.CreateBillingPlan(billingPlanRequest);
+            return Ok(plan);
+        }
+
+        [HttpPost]
+        [Route("subscription/create")]
+        public async Task<IActionResult> CreateSubscription(SubscriptionRequestDto subscriptionRequest)
+        {
+            var result = await _subscriptionService.CreateSubscription(subscriptionRequest);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("subscription/success")]
+        public async Task<IActionResult> SubscriptionSuccesful(string token)
+        {
+            Log.Information($"Success subscription with token '{token}'");
+            return Ok("Success!");
+        }
+
+        [HttpPost]
+        [Route("subscription/cancel")]
+        public async Task<IActionResult> SubscriptionCanceled(string token)
+        {
+            Log.Information($"Canceled subscription for token {token}");
+            return Ok("Canceled!");
+        }
+
+        [HttpGet]
+        [Route("subscription/createdsubscriptions")]
+        public async Task<IActionResult> GetSubscriptions(GetSubscriptionsDto getSubscriptions)
+        {
+            var data = await _subscriptionService.GetSubscriptions(getSubscriptions);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("subscription/execute")]
+        public async Task<IActionResult> ExecuteSubscription(ExecuteSubscriptionDto executeSubscription)
+        {
+            var result = await _subscriptionService.ExecuteSubscription(executeSubscription);
+            return Ok(result);
         }
     }
 }
