@@ -22,6 +22,7 @@ import { PayPalResultComponent } from './_components-user/pay-pal-result/pay-pal
 import { UserService } from './_services/user/user.service';
 import { PayPalFailedComponent } from './_components-user/pay-pal-failed/pay-pal-failed.component';
 import { SubscriptionComponent } from './_components/subscription/subscription.component';
+import { CryptoComponent } from './_components-user/crypto/crypto.component';
 
 export function getToken() {
   return localStorage.getItem('token');
@@ -39,7 +40,8 @@ export function getToken() {
     PaymentOptionsComponent,
     PayPalResultComponent,
     PayPalFailedComponent,
-    SubscriptionComponent
+    SubscriptionComponent,
+    CryptoComponent
   ],
   imports: [
     JwtModule.forRoot({

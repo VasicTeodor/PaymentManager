@@ -20,6 +20,7 @@ namespace BitCoin.Service.Models
         public string CancelUrl { get; set; }
         public string SuccessUrl { get; set; }
         public string Token { get; set; }
+        public Guid MerchantId { get; set; }
         [Timestamp]
         public byte[] TableVersion { get; set; }
     }

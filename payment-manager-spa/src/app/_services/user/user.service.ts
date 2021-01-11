@@ -40,6 +40,6 @@ export class UserService {
   }
 
   bitCoinExecutePayment(cryptoRequest: any, serviceUrl: string) {
-    return this.http.post<any>(serviceUrl + 'bitcoin/', cryptoRequest);
+    return this.http.post<any>(serviceUrl + 'bitcoin/create-payment', cryptoRequest);
   }
 }

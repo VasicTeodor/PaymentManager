@@ -33,6 +33,8 @@ namespace BitCoin.Service.Helpers
                     opt => opt.MapFrom(src => src.SuccessUrl))
                 .ForPath(dest => dest.Token,
                     opt => opt.MapFrom(src => src.Token))
+                .ForPath(dest => dest.MerchantId,
+                    opt => opt.MapFrom(src => src.MerchantId))
                 .ForPath(dest => dest.Id,
                     opt => opt.Ignore())
                 .ForPath(dest => dest.TableVersion,

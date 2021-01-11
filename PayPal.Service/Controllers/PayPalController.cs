@@ -105,7 +105,7 @@ namespace PayPal.Service.Controllers
                     Amount = request.Amount,
                     PaymentId = request.Id,
                     MerchantOrderId = request.OrderId,
-                    Status = "FAILURE",
+                    Status = "FAILED",
                     AcquirerOrderId = Guid.NewGuid(),
                     AcquirerTimestamp = DateTime.UtcNow
                 };

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using BitCoin.Service.Dtos;
 using BitCoin.Service.Models;
+using BitCoin.Service.Repository.Interfaces;
 using BitCoin.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace BitCoin.Service.Controllers
@@ -16,9 +18,16 @@ namespace BitCoin.Service.Controllers
     public class BitCoinController : ControllerBase
     {
         private readonly ICoingateService _coingateService;
-        public BitCoinController(ICoingateService coingateService)
+        private readonly IOrderRepository _repository;
+        private readonly IGenericRestClient _restClient;
+        private readonly IConfiguration _configuration;
+
+        public BitCoinController(ICoingateService coingateService, IOrderRepository repository, IGenericRestClient restClient, IConfiguration configuration)
         {
             _coingateService = coingateService;
+            _repository = repository;
+            _restClient = restClient;
+            _configuration = configuration;
         }
 
         // GET api/values  
@@ -57,6 +66,46 @@ namespace BitCoin.Service.Controllers
             return BadRequest("Your Coingate account is not verificated!");
 
             
+        }
+
+        [HttpGet]
+        [Route("payment-status")]
+        public async Task<IActionResult> PaymentStatus(string orderId, string status)
+        {
+            TransactionDto transaction;
+            Log.Information("Received response from coingate api");
+            var paymentManagerUrl = _configuration.GetSection("PaymentManagerApi:BaseUrl").Value;
+            var actionUrl = _configuration.GetSection("PaymentManagerApi:FinishTransaction").Value;
+            var order = await _repository.GetOrder(orderId);
+            if (status=="success")
+            {
+                transaction = new TransactionDto()
+                {
+                    Amount = Convert.ToDecimal(order.PriceAmount),
+                    PaymentId = order.Id,
+                    MerchantOrderId = order.MerchantId,
+                    Status = "SUCCESS",
+                    AcquirerOrderId = Guid.NewGuid(),
+                    AcquirerTimestamp = DateTime.UtcNow
+                };
+            }
+            else
+            {
+                transaction = new TransactionDto()
+                {
+                    Amount = Convert.ToDecimal(order.PriceAmount),
+                    PaymentId = order.Id,
+                    MerchantOrderId = order.MerchantId,
+                    Status = "FAILED",
+                    AcquirerOrderId = Guid.NewGuid(),
+                    AcquirerTimestamp = DateTime.UtcNow
+                };
+            }
+
+            var paymentManagerResponse = await _restClient.PostRequest<RedirectDto>($"{paymentManagerUrl}{actionUrl}", transaction);
+            Log.Information("Redirecting to merchant store.");
+
+            return Redirect(paymentManagerResponse.RedirectUrl);
         }
     }
 }

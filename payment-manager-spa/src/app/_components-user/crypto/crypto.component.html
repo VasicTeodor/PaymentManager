@@ -13,38 +13,37 @@
       <hr>
       <div>
         <div>
-          <span id="amount">Amount</span>
+          <span id="priceAmount">Amount</span>
         </div>
-        <input type="number" formControlName="amount" readonly aria-label="Amount" min="0">
+        <input type="number" formControlName="priceAmount" readonly aria-label="PriceAmount" min="0">
       </div>
       <div>
         <div>
-          <span id="currency">Currency</span>
+          <span id="priceCurrency">Price Currency</span>
         </div>
-        <input type="text" formControlName="currency" aria-label="Currency">
+        <input type="text" formControlName="priceCurrency" aria-label="PriceCurrency">
+      </div>
+      <div>
+        <div>
+          <span id="receiveCurrency">Recieve Currency</span>
+        </div>
+        <input type="text" formControlName="receiveCurrency" aria-label="ReceiveCurrency">
       </div>
       <div>
         <div>
           <span id="description">Description</span>
         </div>
-        <input type="text" formControlName="description" aria-label="Description">
+        <input type="text" formControlName="description" aria-label="Description" readonly>
       </div>
       <div>
         <div>
-          <span id="intent">Intent</span>
+          <span id="title">Title</span>
         </div>
-        <input type="text" formControlName="intent" aria-label="Intent" readonly>
+        <input type="text" formControlName="title" aria-label="Title" readonly>
       </div>
-      <div>
-        <div>
-          <span id="paymentMethod">Payment method</span>
-        </div>
-        <input type="text" formControlName="paymentMethod" aria-label="PaymentMethod" readonly >
-      </div>
-      <hr>
-      <button type="submit">Submit</button>
+
+      <button class="submit" type="submit">Submit</button>
       <hr>
     </div>
   </form>
-  <button type="button" (click)="confirm()" *ngIf="isVisible">Confirm</button>
 </div>

@@ -13,9 +13,9 @@ import { UserService } from 'src/app/_services/user/user.service';
 export class CryptoComponent implements OnInit {
 
   cryptoForm = new FormGroup({
-    amount: new FormControl(''),
+    priceAmount: new FormControl(''),
     priceCurrency: new FormControl(''),
-    recieveCurrency: new FormControl(''),
+    receiveCurrency: new FormControl(''),
     title: new FormControl(''),
     description: new FormControl(''),
   });
@@ -30,22 +30,24 @@ export class CryptoComponent implements OnInit {
   orderId: string = '';
   serviceUrl: string | null = null;
   paymentOrderDetails: PaymentOrderDetails | null = null;
+  merchantId: string = '';
 
   constructor(private activatedRoute: ActivatedRoute, private userService: UserService) { 
     this.activatedRoute.params.subscribe(params  => {
       this.orderId = params['orderId'];
-      this.serviceUrl = localStorage.getItem('BitCoinUrlradio');
+      this.serviceUrl = localStorage.getItem('BitCoinUrl');
 
       this.userService.getPaymentDetails(this.orderId).subscribe((result: PaymentOrderDetails) => {
         console.log('Received paymentOrderDetails', result);
         this.paymentOrderDetails = result;
-        
+        this.merchantId = result.merchantOrderId;
+
         this.cryptoForm = new FormGroup({
-          amount: new FormControl(this.paymentOrderDetails.amount),
+          priceAmount: new FormControl(this.paymentOrderDetails.amount),
           priceCurrency: new FormControl(''),
-          recieveCurrency: new FormControl(''),
-          title: new FormControl(''),
-          description: new FormControl(''),
+          receiveCurrency: new FormControl(''),
+          title: new FormControl('Publishing Company Book'),
+          description: new FormControl('Book'),
         });
       });
      });
@@ -56,15 +58,16 @@ export class CryptoComponent implements OnInit {
 
   formData() {
     let cryptoRequest = {
-      amount: this.cryptoForm.value.amount,
+      priceAmount: this.cryptoForm.value.priceAmount,
       priceCurrency: this.cryptoForm.value.priceCurrency,
-      recieveCurrency: this.cryptoForm.value.recieveCurrency,
+      receiveCurrency: this.cryptoForm.value.receiveCurrency,
       title: this.cryptoForm.value.title,
       description: this.cryptoForm.value.description,
-      callbackUrl: 'http://localhost:4200/paypalfailed',
-      cancelUrl: 'http://localhost:4200/paypalfailed',
-      successUrl: 'http://localhost:4200/paypalfailed',
-      orderId: this.orderId
+      callbackUrl: this.serviceUrl + `bitcoin/payment-status?orderId=${this.orderId}&status=error`,
+      cancelUrl: this.serviceUrl + `bitcoin/payment-status?orderId=${this.orderId}&status=failure`,
+      successUrl: this.serviceUrl + `bitcoin/payment-status?orderId=${this.orderId}&status=success`,
+      orderId: this.orderId,
+      merchantId: this.merchantId
     };
     this.createOrder(cryptoRequest);
   }
@@ -76,13 +79,8 @@ export class CryptoComponent implements OnInit {
         this.isVisible = true;
         this.error = false;
         this.success = true;
-        val.links.forEach((link: PayPalLink) => {
-          if (link.type === 'execute') {
-            this.executeUrl = link.url;
-          } else if (link.type === 'approval_url') {
-            this.confirmUrl = link.url;
-          }
-        });
+
+        window.open(val.payment_url, "_self");
         console.log("POST call successful value returned in body", val);
       },
       response => {
@@ -97,10 +95,4 @@ export class CryptoComponent implements OnInit {
       });
     }
   }
-
-  confirm() {
-    localStorage.setItem('executeUrl', this.executeUrl);
-    window.open(this.confirmUrl, "_self");
-  }
-
 }
