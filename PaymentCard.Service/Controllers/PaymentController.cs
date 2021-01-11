@@ -15,12 +15,14 @@ namespace Bank.Service.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IGenericRestClient _restClient;
+        private readonly IIssuerPaymentService _issuerPaymentService;
         private string paymentManagerApiUrl = "https://localhost:5021/api/payment/";
 
-        public PaymentController(IPaymentService paymentService, IGenericRestClient restClient)
+        public PaymentController(IPaymentService paymentService, IGenericRestClient restClient, IIssuerPaymentService issuerPaymentService)
         {
             _restClient = restClient;
             _paymentService = paymentService;
+            _issuerPaymentService = issuerPaymentService;
         }
 
         // GET api/values  
@@ -59,6 +61,14 @@ namespace Bank.Service.Controllers
             Log.Information($"Bank service sending Transaction data to PaymentManager to finish transaction");
             var callPaymentManager = await _restClient.PostRequest<RedirectDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
             return Ok(callPaymentManager);
+        }
+
+        [HttpPost]
+        [Route("IssuerPayment")]
+        public ActionResult<ResponseDto> IssuerPayment(RequestDto issuerRequest)
+        {
+            ResponseDto response = _issuerPaymentService.IssuerPayment(issuerRequest);
+            return Ok(response);
         }
     }
 }

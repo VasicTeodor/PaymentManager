@@ -9,5 +9,7 @@ namespace Bank.Service.Repositories.Interfaces
     public interface IClientRepository : IRepository<Client, Guid>
     {
         Client FindByPayerId(String merchantId);
+        Client FindByName(String firstName);
+        Client GetClientWithNavigationProperties(Guid id);
     }
 }

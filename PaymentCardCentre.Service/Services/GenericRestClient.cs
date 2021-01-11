@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Bank.Service.Services
+namespace PaymentCardCentre.Service.Services
 {
     public class GenericRestClient : IGenericRestClient
     {
@@ -15,8 +15,6 @@ namespace Bank.Service.Services
         {
             _restClient = restClient;
         }
-
-
 
         /// <summary>
         /// For getting the resources from a web api

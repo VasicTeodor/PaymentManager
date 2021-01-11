@@ -20,12 +20,12 @@ namespace Bank.Service.Repositories.Implementations
 
         public Payment GetPaymentByOrderId(Guid orderId)
         {
-            return _context.Payments.Include(p => p.Merchant).FirstOrDefault(p => p.Id.Equals(orderId));
+            return _context.Payments.Include(p => p.Merchant).ThenInclude(p=>p.Cards).FirstOrDefault(p => p.Id.Equals(orderId));
         }
 
         public Payment GetPaymentByUrl(string url)
         {
-            return _context.Payments.Include(p => p.Merchant).FirstOrDefault(p => p.Url.Equals(url));
+            return _context.Payments.Include(p => p.Merchant).ThenInclude(p=>p.Cards).FirstOrDefault(p => p.Url.Equals(url));
         }
     }
 }

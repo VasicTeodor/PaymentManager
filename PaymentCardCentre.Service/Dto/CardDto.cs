@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Bank.Service.Dto
+namespace PaymentCardCentre.Service.Dto
 {
     public class CardDto
     {

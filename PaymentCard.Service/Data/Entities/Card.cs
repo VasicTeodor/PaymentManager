@@ -10,7 +10,7 @@ namespace Bank.Service.Data.Entities
     {
         public Guid Id { get; set; }
         public string Pan { get; set; }
-        public int SecurityCode { get; set; }
+        public string SecurityCode { get; set; }
         public string HolderName { get; set; }
         public DateTime? ValidTo { get; set; }
         //ovo se ne bi trebalo mapirati kada povlacimo iz baze ja mislim
