@@ -40,7 +40,7 @@ namespace Bank.Service
                 x.UseLazyLoadingProxies().
                 UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
-            ////services.AddConsulConfig(Configuration);
+            services.AddConsulConfig(Configuration);
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
@@ -93,7 +93,7 @@ namespace Bank.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseConsul("bank");
+            app.UseConsul("bank");
             app.UseRouting();
             app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>
