@@ -19,7 +19,7 @@ namespace Bank.Service.Repositories.Implementations
 
         public Client GetClientWithNavigationProperties(Guid id)
         {
-            return _context.Clients.Include(c => c.Account).ThenInclude(c => c.Cards).FirstOrDefault(x => x.Id.Equals(id));
+            return _context.Clients.Include(c => c.Account).ThenInclude(c => c.Client).FirstOrDefault(x => x.Id.Equals(id));
         }
 
         public Client FindByName(string firstName)

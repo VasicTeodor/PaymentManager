@@ -8,7 +8,7 @@ namespace Bank.Service.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IClientRepository Accounts { get; set; }
+        IAccountRepository Accounts { get; set; }
         ICardRepository Cards { get; set; }
         IClientRepository Clients { get; set; }
         ITransactionRepository Transactions { get; set; }

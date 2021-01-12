@@ -26,10 +26,10 @@ namespace PaymentCardCentre.Service.Controllers
 
         [HttpPost]
         [Route("PersistPayment")]
-        public ActionResult<ResponseDto> CheckPayment([FromBody] RequestDto request)
+        public async Task<ActionResult<ResponseDto>> CheckPayment([FromBody] RequestDto request)
         {
             Log.Information($"PCC received request");
-            var paymentResponse = _pccPayment.Payment(request);
+            var paymentResponse = await _pccPayment.Payment(request);
             return Ok(paymentResponse);
         }
     }

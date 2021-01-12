@@ -37,9 +37,10 @@ namespace Bank.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BankDbContext>(x =>
-                x.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
+                x.UseLazyLoadingProxies().
+                UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
-            services.AddConsulConfig(Configuration);
+            ////services.AddConsulConfig(Configuration);
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
@@ -81,12 +82,18 @@ namespace Bank.Service
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seed)
         {
+            //using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    var context = serviceScope.ServiceProvider.GetRequiredService<BankDbContext>();
+            //    context.Database.Migrate();
+            //}
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseConsul("bank");
+            //app.UseConsul("bank");
             app.UseRouting();
             app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>

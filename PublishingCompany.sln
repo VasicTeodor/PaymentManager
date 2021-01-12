@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ethereum.Service", "Ethereu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentManager.Api", "PaymentManager.Api\PaymentManager.Api.csproj", "{02EEAFAA-A525-4502-8AE1-F982E17FA338}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Issuer.Service", "..\Issuer.Service\Issuer.Service.csproj", "{B04A284E-85B9-4563-8369-4283955F0204}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{02EEAFAA-A525-4502-8AE1-F982E17FA338}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02EEAFAA-A525-4502-8AE1-F982E17FA338}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02EEAFAA-A525-4502-8AE1-F982E17FA338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04A284E-85B9-4563-8369-4283955F0204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04A284E-85B9-4563-8369-4283955F0204}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04A284E-85B9-4563-8369-4283955F0204}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04A284E-85B9-4563-8369-4283955F0204}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{E2920E89-3FAA-4B02-AA9E-9B1E6CB3C517} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 		{705C18C0-03B1-4751-89B1-C81B86364320} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 		{7CCB03B5-D90F-4F27-8C97-84286E48F976} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
+		{B04A284E-85B9-4563-8369-4283955F0204} = {F8DC56F2-E8CE-4119-B1C5-08A4B915D7BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9F941125-0732-4D9D-A8D8-D772569B3F82}

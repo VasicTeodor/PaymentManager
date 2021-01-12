@@ -38,7 +38,7 @@ namespace Bank.Service.Services
                 return null;
             }
 
-            var payer = _unitOfWork.Clients.Get(card.Account.Id);
+
             Transaction transaction = new Transaction()
             {
                 Id = Guid.NewGuid(),
@@ -51,7 +51,7 @@ namespace Bank.Service.Services
             TransactionDto transactionDto = new TransactionDto()
             {
                 //videti da li treba otkomentarisati ovo cudo
-                //AcquirerOrderId = payer.Id,
+                AcquirerOrderId = payment.Id,
                 AcquirerTimestamp = DateTime.Now,
                 Amount = payment.Amount,
                 MerchantOrderId = orderId,
@@ -60,19 +60,11 @@ namespace Bank.Service.Services
 
 
             ///kartica se ne nalazi u banci prodavca
-            var merchantCards = merchant.Account.Cards.ToList();
-            var searchCard = merchantCards.Find(c => _securityService.DecryptStringAes(c.Pan.Substring(1, 6)).Equals(cardDto.Pan.Substring(1, 6)));
-            if (searchCard==null)
+            //var merchantCards = merchant.Account.Cards.ToList();
+            //var searchCard = merchantCards.Find(c => c.Pan.Substring(1,6).Equals(cardDto.Pan.Substring(1, 6)));
+            if (card==null)
             {
                 Log.Information($"Payment service genereting request for PCC");
-                //postavi za platioca pcc jer ne nemamo podatke od njemu pa kasnije vrati prave informacije
-                //dodati u bazu pcc za platioca 
-                //napraviti dto za slanje zahteva pcc
-                //napraviti bazu i odgovarajuce metode i dtoe u pcc
-                //poslati zahtev pcc-u
-                //sacekati odgovor
-                //ako je dobar podesiti prodavcu sredstva iz transakcije
-                //ako ne podesiti gresku
                 var pccClient = _unitOfWork.Clients.FindByName("Pcc");
                 if (pccClient == null)
                 {
@@ -150,9 +142,11 @@ namespace Bank.Service.Services
                 //    MerchantOrderId = orderId,
                 //    PaymentId = payment.Id
                 //};
+                var payer = _unitOfWork.Clients.Get(card.Account.Id);
 
                 //dodati i proveru datuma kasnije 
-                if (!_securityService.DecryptStringAes(card.SecurityCode).Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName))
+                //var kkkkk = _securityService.DecryptStringAes(card.SecurityCode);
+                if (!card.SecurityCode.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName))
                 {
                     transaction.Status = "ERROR";
                     transactionDto.Status = "ERROR";

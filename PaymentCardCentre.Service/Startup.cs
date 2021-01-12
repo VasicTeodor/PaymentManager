@@ -35,11 +35,11 @@ namespace PaymentCardCentre.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PCCDbContext>(x =>
-                    x.UseSqlServer(Configuration.GetConnectionString("DbConnection2")));
+                    x.UseSqlServer(Configuration.GetConnectionString("DbConnection3")));
             //services.AddConsulConfig(Configuration);
             services.AddControllers().AddNewtonsoftJson();
-            services.AddHealthChecks();
-            services.AddHealthChecksUI().AddInMemoryStorage();
+            //services.AddHealthChecks();
+            //services.AddHealthChecksUI().AddInMemoryStorage();
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy1",
                     //corsBuilder => corsBuilder.WithOrigins("http://localhost:10662")
@@ -52,10 +52,12 @@ namespace PaymentCardCentre.Service
             // Register Services
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
+            services.AddScoped<PCCDbContext>();
             services.AddScoped<IBankRepository, BankRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IPCCPayment, PCCPayment>();
-            services.AddScoped<PCCDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -71,6 +73,12 @@ namespace PaymentCardCentre.Service
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbSeed seed)
         {
+            //using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    var context = serviceScope.ServiceProvider.GetRequiredService<PCCDbContext>();
+            //    context.Database.Migrate();
+            //}
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -88,13 +96,13 @@ namespace PaymentCardCentre.Service
 
             seed.SeedBank();
 
-            app.UseHealthChecks("/pcc/checks/health", new HealthCheckOptions()
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
+            //app.UseHealthChecks("/pcc/checks/health", new HealthCheckOptions()
+            //{
+            //    Predicate = _ => true,
+            //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            //});
 
-            app.UseHealthChecksUI();
+            //app.UseHealthChecksUI();
         }
     }
 }

@@ -43,7 +43,8 @@ namespace Bank.Service.Services
                 return response;
             }
 
-            if (!_securityService.DecryptStringAes(card.SecurityCode).Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName))
+            //if (!_securityService.DecryptStringAes(card.SecurityCode).Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName))
+            if (!card.SecurityCode.Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName))
             {
                 transaction.Status = "ERROR";
                 response.Status = "ERROR";

@@ -18,7 +18,13 @@ namespace PaymentCardCentre.Service.Repository
 
         public int AddTransaction(Transaction transaction)
         {
-            _context.Transactions.Add(transaction);
+            try
+            {
+                _context.Transactions.Add(transaction);
+            }catch(Exception e)
+            {
+
+            }
             return _context.SaveChanges();
         }
 

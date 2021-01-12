@@ -11,15 +11,13 @@ namespace PaymentCardCentre.Service.Services
 {
     public class PCCPayment : IPCCPayment
     {
-        private readonly IBankRepository bankRepository;
-        private readonly ITransactionRepository transactionRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IGenericRestClient restClient;
-        private readonly string bankUrl = "http://localhost:10662/Bank/IssuerPayment";
+        private readonly string _issuerUrl = "http://localhost:55208/Issuer/IssuerPayment";
 
-        public PCCPayment(IBankRepository bankRepository, ITransactionRepository transactionRepository, IGenericRestClient restClient)
+        public PCCPayment(IUnitOfWork unitOfWork, IGenericRestClient restClient)
         {
-            this.bankRepository = bankRepository;
-            this.transactionRepository = transactionRepository;
+            this.unitOfWork = unitOfWork;
             this.restClient = restClient;
         }
 
@@ -42,17 +40,17 @@ namespace PaymentCardCentre.Service.Services
 
             //izvuci deo za banku da se raspozna
             string panPart = request.CardData.Pan.Substring(1, 6);
-            var bank = bankRepository.GetBankByPan(panPart);
+            var bank = unitOfWork.Banks.GetBankByPan(panPart);
             if (bank == null)
             {
                 Log.Information($"PCC Payment request failed, no bank found");
                 transaction.Status = "ERROR";
                 response.Status = "ERROR";
-                bankRepository.SaveChanges();
+                unitOfWork.Complete();
                 return response;
             }
 
-            var issuerResponseDto = await restClient.PostRequest<ResponseDto>(bankUrl, request);
+            var issuerResponseDto = await restClient.PostRequest<ResponseDto>(_issuerUrl, request);
 
             if (issuerResponseDto == null)
             {
@@ -66,8 +64,8 @@ namespace PaymentCardCentre.Service.Services
             transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
             transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
             transaction.Status = "SUCCESS";
-            transactionRepository.AddTransaction(transaction);
-            transactionRepository.SaveChanges();
+            unitOfWork.Transactions.AddTransaction(transaction);
+            unitOfWork.Complete();
 
             response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
             response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
