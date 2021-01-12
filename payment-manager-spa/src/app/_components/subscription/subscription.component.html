@@ -1,10 +1,6 @@
-<!-- <section>
-  <h1 style="text-align: center; margin-top: 0px; font-size: 35px;">
-  ACME Corporation Payment Manager
-  </h1>
-  
+<section>
   <h2 style="text-align: center; margin-bottom: 50px;">
-    Please fill in form to continue:
+    Please fill in Subscription form to continue:
   </h2>
 </section>
 <div class="text-center">
@@ -13,9 +9,46 @@
       <hr>
       <div>
         <div>
-          <span id="amount">Amount</span>
+          <span id="name">Name</span>
         </div>
-        <input type="number" formControlName="amount" readonly aria-label="Amount" min="0">
+        <input type="text" formControlName="name" aria-label="Name">
+      </div>
+      <div>
+        <div>
+          <span id="description">Description</span>
+        </div>
+        <input type="text" formControlName="description" aria-label="Description">
+      </div>
+      <div>
+      <div>
+        <div>
+          <span id="subscriptionType">Subscription Type</span>
+        </div>
+        <input type="text" formControlName="subscriptionType" aria-label="SubscriptionType">
+      </div>
+      <div>
+        <div>
+          <span id="paymentType">Payment Type</span>
+        </div>
+        <input type="text" formControlName="paymentType" aria-label="PaymentType">
+      </div>
+      <div>
+        <div>
+          <span id="frequency">Frequency</span>
+        </div>
+        <input type="text" formControlName="frequency" aria-label="Frequency">
+      </div>
+      <div>
+        <div>
+          <span id="frequencyInterval">Frequency Interval</span>
+        </div>
+        <input type="number" formControlName="frequencyInterval" aria-label="FrequencyInterval">
+      </div>
+      <div>
+        <div>
+          <span id="cycles">Cycles</span>
+        </div>
+        <input type="number" formControlName="cycles" aria-label="Cycles">
       </div>
       <div>
         <div>
@@ -25,26 +58,33 @@
       </div>
       <div>
         <div>
-          <span id="description">Description</span>
+          <span id="amount">Amount</span>
         </div>
-        <input type="text" formControlName="description" aria-label="Description">
+        <input type="number" formControlName="amount" aria-label="Amount" min="0">
       </div>
       <div>
         <div>
-          <span id="intent">Intent</span>
+          <span id="successUrl">Success Url</span>
         </div>
-        <input type="text" formControlName="intent" aria-label="Intent" readonly>
+        <input type="text" formControlName="successUrl" aria-label="SuccessUrl">
       </div>
       <div>
         <div>
-          <span id="paymentMethod">Payment method</span>
+          <span id="failedUrl">Failed Url</span>
         </div>
-        <input type="text" formControlName="paymentMethod" aria-label="PaymentMethod" readonly >
+        <input type="text" formControlName="failedUrl" aria-label="FailedUrl">
+      </div>
+      <div>
+        <div>
+          <span id="webStoreId">Web Store Id</span>
+        </div>
+        <input type="text" formControlName="webStoreId" aria-label="WebStoreId">
       </div>
       <hr>
       <button type="submit">Submit</button>
       <hr>
+      </div>
     </div>
   </form>
-  <button type="button" (click)="confirm()" *ngIf="isVisible">Confirm</button>
-</div> -->
+  <button type="button" (click)="createSubscription()" *ngIf="isVisible">Confirm</button>
+</div>

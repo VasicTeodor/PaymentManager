@@ -149,9 +149,13 @@ namespace PayPal.Service.Controllers
         }
 
         [HttpGet]
-        [Route("subscription/createdsubscriptions")]
-        public async Task<IActionResult> GetSubscriptions(GetSubscriptionsDto getSubscriptions)
+        [Route("subscription/get")]
+        public async Task<IActionResult> GetSubscriptions(Guid webStoreId)
         {
+            var getSubscriptions = new GetSubscriptionsDto()
+            {
+                WebStoreId = webStoreId
+            };
             var data = await _subscriptionService.GetSubscriptions(getSubscriptions);
             return Ok(data);
         }

@@ -31,7 +31,7 @@ namespace PaymentManager.Api.Repository
 
         public async Task<WebStore> GetWebStoreById(Guid id)
         {
-            return await _context.WebStores.FirstOrDefaultAsync(ws => ws.Id == id);
+            return await _context.WebStores.Include(ws => ws.PaymentOptions).ThenInclude(po => po.PaymentService).FirstOrDefaultAsync(ws => ws.Id == id);
         }
 
         public async Task<PaginationResult<WebStore>> GetWebStores(int pageNumber = 1, int pageSize = 10)
@@ -41,7 +41,7 @@ namespace PaymentManager.Api.Repository
                 PageSize = pageSize,
                 PageNumber = pageNumber,
                 NumberOfItems = await _context.WebStores.CountAsync(),
-                Items = await _context.WebStores.Include(ws => ws.PaymentOptions).Skip(pageSize * (pageNumber - 1))
+                Items = await _context.WebStores.Include(ws => ws.PaymentOptions).ThenInclude(ws => ws.PaymentService).Skip(pageSize * (pageNumber - 1))
                     .Take(pageSize).ToListAsync()
             };
 

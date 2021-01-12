@@ -7,6 +7,8 @@ namespace PayPal.Service.Data
     {
         public DbSet<PaymentRequest> PaymentRequests { get; set; }
         public DbSet<BillingPlanRequest> BillingPlanRequests { get; set; }
+        public DbSet<SubscriptionRequest> SubscriptionRequests { get; set; }
+        public DbSet<ExecutedSubscription> ExecutedSubscriptions { get; set; }
 
         public PayPalContext(DbContextOptions<PayPalContext> options): base(options)
         {

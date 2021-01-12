@@ -77,30 +77,19 @@ namespace BitCoin.Service.Controllers
             var paymentManagerUrl = _configuration.GetSection("PaymentManagerApi:BaseUrl").Value;
             var actionUrl = _configuration.GetSection("PaymentManagerApi:FinishTransaction").Value;
             var order = await _repository.GetOrder(orderId);
-            if (status=="success")
+
+            transaction = new TransactionDto()
             {
-                transaction = new TransactionDto()
-                {
-                    Amount = Convert.ToDecimal(order.PriceAmount),
-                    PaymentId = order.Id,
-                    MerchantOrderId = order.MerchantId,
-                    Status = "SUCCESS",
-                    AcquirerOrderId = Guid.NewGuid(),
-                    AcquirerTimestamp = DateTime.UtcNow
-                };
-            }
-            else
-            {
-                transaction = new TransactionDto()
-                {
-                    Amount = Convert.ToDecimal(order.PriceAmount),
-                    PaymentId = order.Id,
-                    MerchantOrderId = order.MerchantId,
-                    Status = "FAILED",
-                    AcquirerOrderId = Guid.NewGuid(),
-                    AcquirerTimestamp = DateTime.UtcNow
-                };
-            }
+                Amount = Convert.ToDecimal(order.PriceAmount),
+                PaymentId = order.Id,
+                MerchantOrderId = order.MerchantId,
+                Status = "ERROR",
+                AcquirerOrderId = Guid.NewGuid(),
+                AcquirerTimestamp = DateTime.UtcNow
+            };
+
+
+            transaction.Status = status=="success" ? "SUCCESS" : "FAILED";
 
             var paymentManagerResponse = await _restClient.PostRequest<RedirectDto>($"{paymentManagerUrl}{actionUrl}", transaction);
             Log.Information("Redirecting to merchant store.");

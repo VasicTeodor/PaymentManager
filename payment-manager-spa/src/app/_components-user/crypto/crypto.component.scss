@@ -20,3 +20,10 @@ button{
 .submit{
     margin-top: 10px;
 }
+
+.money-input{
+    border: none;
+    user-select: none;
+    outline: none;
+    cursor: not-allowed;
+}

@@ -16,3 +16,10 @@ button{
     font-size: 20px; 
     font-weight: bold;
 }
+
+.money-input{
+    border: none;
+    user-select: none;
+    outline: none;
+    cursor: not-allowed;
+}

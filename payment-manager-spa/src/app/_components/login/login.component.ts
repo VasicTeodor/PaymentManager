@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.model).subscribe(next => {
       this.toastr.successMessage('Logged in succesfully');
-      this.router.navigate(['/home']);
+      this.router.navigate(['/dashboard/admin']);
     }, error => {
       this.toastr.errorMessage('Failed to login');
     }, () => {

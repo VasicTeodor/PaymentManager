@@ -30,14 +30,14 @@ getPaymentService(id: string) : Observable<PaymentService>{
 }
 
 removePaymentService(id: string) : Observable<PaymentService>{
-  return this.http.get<PaymentService>(this.baseUrl + 'api/paymentservices/removepaymentservice?id=' + id);
+  return this.http.delete<PaymentService>(this.baseUrl + 'api/paymentservices/removepaymentservice?id=' + id);
 }
 
 editPaymentService(id: string) : Observable<PaymentService>{
   return this.http.get<PaymentService>(this.baseUrl + 'api/paymentservices/addpaymentservice?id=' + id);
 }
 
-addPaymentService(id: string) : Observable<PaymentService>{
-  return this.http.get<PaymentService>(this.baseUrl + 'api/paymentservices/addpaymentservice?id=' + id);
+addPaymentService(service: any) : Observable<any>{
+  return this.http.post<any>(this.baseUrl + 'api/paymentservices/addpaymentservice', service);
 }
 }

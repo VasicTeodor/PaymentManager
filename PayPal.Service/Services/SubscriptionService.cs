@@ -110,8 +110,8 @@ namespace PayPal.Service.Services
                 var createdSubscription = new SubscriptionRequest()
                 {
                     Description = agreement.description,
-                    ExecuteAgreementUrl = agreement.links.FirstOrDefault(l => l.href == "execute").href,
-                    ExpressCheckoutUrl = agreement.links.FirstOrDefault(l => l.href == "approval_url").href,
+                    ExecuteAgreementUrl = agreement.links.FirstOrDefault(l => l.rel == "execute").href,
+                    ExpressCheckoutUrl = agreement.links.FirstOrDefault(l => l.rel == "approval_url").href,
                     Name = agreement.name,
                     WebStoreId = subscriptionRequest.WebStoreId,
                     BillingPlanId = subscriptionRequest.billingPlanId

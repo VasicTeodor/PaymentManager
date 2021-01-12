@@ -1,20 +1,23 @@
 <div class="wrapper" style="position: relative; height: 100%; width: 100%;">
-  <div style="height: 100%; width: 18%; background-color: blue; float: left;">
-    <h2 style="font-size: 26px; margin-left: 10px;">Admin Dashboard</h2>
+  <div style="height: 100%; width: calc(18% - 2px); border-right: 2px solid black; float: left;">
+    <h2 style="font-size: 26px; padding-left: 10px; border-bottom: 2px solid black; height: 53px; margin: 0; padding-top: 25px;">Admin Dashboard</h2>
     <ul style="margin-top: 40px; font-size: 20px; list-style-type: none;">
-      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['']">Component One</a></li>
-      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['webstore'] } }]">WebStore Aux</a></li>
-      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['paymentservice'] } }]">Payment Aux</a></li>
+      <!-- <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['webstore'] } }]">WebStore</a></li> -->
+      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['paymentservice'] } }]">Payment Service</a></li>
+      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['add-merchant'] } }]">Merchant</a></li>
+      <li style="font-weight: 600; font-size: 20px; margin-top: 5px;"><a style="display: block; text-decoration: none;" [routerLink]="['admin', { outlets: { 'sidemenu': ['subscription'] } }]">Subscription</a></li>
     </ul>
   </div>
-  <div style="height: 100%; width: 82%; background-color: yellow; float: right;">
-    <div style="width: 100%; height: 80px; position: relative; top: 0; background-color: green; display: flex;
+  <div style="height: 100%; width: 82%; float: right;">
+    <div style="width: 100%; height: calc(80px - 2px); position: relative; top: 0; border-bottom: 2px solid black; display: flex;
     align-items: center;
     justify-content: right;">
       <h1 style="margin-left: 10px;">Payment Manager</h1>
       <button style="position: absolute; right: 0; margin: 10px; font-size: 20px; font-style: italic; background-color: transparent; border: 1px solid black;">LogOut</button>
     </div>
-    <router-outlet name="sidemenu"></router-outlet>
+    <div style="overflow-y: auto; height: calc(100% - 80px);">
+      <router-outlet name="sidemenu"></router-outlet>
+    </div>
 
   </div>
 </div>
