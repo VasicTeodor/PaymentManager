@@ -34,7 +34,7 @@
           <option *ngFor="let webStore of webStores" [ngValue]="webStore.id">{{webStore.storeName}}</option>
        </select>
       </div>
-      <div>
+      <div *ngIf="showPaymentOptions">
         <div>
           <span id="paymentServices">Payment Services:</span>
         </div>
