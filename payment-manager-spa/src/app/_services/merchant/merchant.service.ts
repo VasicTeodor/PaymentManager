@@ -37,7 +37,7 @@ export class MerchantService {
     return this.http.put<Merchant>(this.baseUrl + 'api/merchant/editmerchant?id=' + id, merchant );
   }
   
-  addMerchant(merchant: Merchant) : Observable<Merchant>{
-    return this.http.post<Merchant>(this.baseUrl + 'api/merchant/addmerchant', merchant);
+  addMerchant(merchant: any) : Observable<any>{
+    return this.http.post<any>(this.baseUrl + 'api/merchant/addmerchant', merchant);
   }
 }

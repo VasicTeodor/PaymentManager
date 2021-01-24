@@ -34,6 +34,9 @@ namespace BitCoin.Service.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("MerchantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(max)");
 

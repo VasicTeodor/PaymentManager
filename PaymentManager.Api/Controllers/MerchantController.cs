@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using PaymentManager.Api.Data.Entities;
+using PaymentManager.Api.Dtos;
 using PaymentManager.Api.Repository.Interfaces;
 using Serilog;
 
@@ -15,10 +17,12 @@ namespace PaymentManager.Api.Controllers
     public class MerchantController : ControllerBase
     {
         private readonly IMerchantRepository _repository;
+        private readonly IMapper _mapper;
 
-        public MerchantController(IMerchantRepository repository)
+        public MerchantController(IMerchantRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -41,9 +45,23 @@ namespace PaymentManager.Api.Controllers
 
         [HttpPost]
         [Route("addmerchant")]
-        public async Task<IActionResult> AddPaymentService(Merchant newMerchant)
+        public async Task<IActionResult> AddPaymentService(AddMerchantDto newMerchantDto)
         {
             Log.Information("Request to add new merchant");
+            var newMerchant = _mapper.Map<Merchant>(newMerchantDto);
+            newMerchant.WebStore = new WebStore()
+            {
+                Id = newMerchantDto.WebStoreId
+            };
+            newMerchant.PaymentServices = new List<MerchantPaymentServices>();
+            foreach (var service in newMerchantDto.PaymentServices)
+            {
+                newMerchant.PaymentServices.Add(new MerchantPaymentServices
+                {
+                    PaymentServiceId = service,
+                    Merchant = newMerchant
+                });
+            }
             var result = await _repository.AddMerchant(newMerchant);
 
             if (result)

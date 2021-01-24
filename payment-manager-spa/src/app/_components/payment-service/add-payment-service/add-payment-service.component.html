@@ -1,3 +1,51 @@
-<p>
-  add-payment-service works!
-</p>
+<section>
+<h2 style="text-align: center; margin-bottom: 50px;">
+  Please fill in form to continue:
+</h2>
+</section>
+<div class="text-center" *ngIf="showForm">
+<form [formGroup]="serviceForm" (ngSubmit)="formData()">
+  <div>
+    <hr>
+    <div>
+      <div>
+        <span id="name">Name</span>
+      </div>
+      <input type="text" formControlName="name" aria-label="Name">
+    </div>
+    <div>
+      <div>
+        <span id="url">Service Address</span>
+      </div>
+      <input type="text" formControlName="url" aria-label="Url">
+    </div>
+    <div>
+      <div>
+        <span id="description">Description</span>
+      </div>
+      <input type="text" formControlName="description" aria-label="Description">
+    </div>
+    <div>
+      <div>
+        <span id="isPassTrough">Is Pass Trough:</span>
+      </div>
+      <select (change)="changeIsPassThrough($event)" formControlName="isPassTrough">
+        <option value="" disabled>Choose one option</option>
+        <option value="True">True</option>
+        <option value="True">False</option>
+     </select>
+    </div>
+    <div>
+      <div>
+        <span id="webStoreId">Web Store Id</span>
+      </div>
+      <select (change)="changeWebStore($event)" formControlName="webStoreId">
+        <option value="" disabled>Choose web store</option>
+        <option *ngFor="let webStore of webStores" [ngValue]="webStore.id">{{webStore.storeName}}</option>
+     </select>
+    </div>
+    <button class="submit" type="submit">Submit</button>
+    <hr>
+  </div>
+</form>
+</div>

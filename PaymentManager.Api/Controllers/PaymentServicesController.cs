@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using PaymentManager.Api.Data.Entities;
+using PaymentManager.Api.Dtos;
 using PaymentManager.Api.Repository.Interfaces;
 using Serilog;
 
@@ -14,10 +17,12 @@ namespace PaymentManager.Api.Controllers
     public class PaymentServicesController : ControllerBase
     {
         private readonly IPaymentServiceRepository _repository;
+        private readonly IMapper _mapper;
 
-        public PaymentServicesController(IPaymentServiceRepository repository)
+        public PaymentServicesController(IPaymentServiceRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -40,9 +45,20 @@ namespace PaymentManager.Api.Controllers
 
         [HttpPost]
         [Route("addpaymentservice")]
-        public async Task<IActionResult> AddPaymentService(PaymentService newService)
+        public async Task<IActionResult> AddPaymentService(CreatePaymentServiceDto newServiceDto)
         {
             Log.Information("Request to add new payment service");
+            var newService = _mapper.Map<PaymentService>(newServiceDto);
+            
+            newService.WebStores = new List<WebStorePaymentService>()
+            {
+                new WebStorePaymentService()
+                {
+                    PaymentService = newService,
+                    WebStoreId = newServiceDto.WebStoreId
+                }
+            };
+
             var result = await _repository.AddPaymentService(newService);
             
             if (result)

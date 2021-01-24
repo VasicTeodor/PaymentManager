@@ -21,6 +21,11 @@ import { PaymentOptionsComponent } from './_components-user/payment-options/paym
 import { PayPalResultComponent } from './_components-user/pay-pal-result/pay-pal-result.component';
 import { UserService } from './_services/user/user.service';
 import { PayPalFailedComponent } from './_components-user/pay-pal-failed/pay-pal-failed.component';
+import { SubscriptionComponent } from './_components/subscription/subscription.component';
+import { CryptoComponent } from './_components-user/crypto/crypto.component';
+import { SubscriptionOptionsComponent } from './_components-user/subscription-options/subscription-options.component';
+import { AddPaymentServiceComponent } from './_components/payment-service/add-payment-service/add-payment-service.component';
+import { MerchantComponent } from './_components/merchant/merchant.component';
 
 export function getToken() {
   return localStorage.getItem('token');
@@ -37,7 +42,12 @@ export function getToken() {
     PayPalComponent,
     PaymentOptionsComponent,
     PayPalResultComponent,
-    PayPalFailedComponent
+    PayPalFailedComponent,
+    SubscriptionComponent,
+    CryptoComponent,
+    SubscriptionOptionsComponent,
+    AddPaymentServiceComponent,
+    MerchantComponent
   ],
   imports: [
     JwtModule.forRoot({

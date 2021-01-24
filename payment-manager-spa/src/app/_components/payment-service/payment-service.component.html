@@ -1,6 +1,7 @@
-<p>
-  payment-service works!
-</p>
+<div style="padding: 20px;">
+<h2>
+  Payment Services:
+</h2>
 <table>
   <thead>
     <tr>
@@ -15,17 +16,21 @@
       <td (click)="getPaymentService(service.id)">{{service.name}}</td>
       <td>{{service.url}}</td>
       <td>{{service.description}}</td>
-      <td>X</td>
-      <td>Edit</td>
+      <td (click)="deletePaymentService(service)" style="font-weight: bolder;">Delete</td>
+      <!-- <td>Edit</td> -->
     </tr>
   </tbody>
 </table>
-<div *ngIf="paymentService">
-  <span (click)="close()">CLOSE</span>
-  <label>Name</label>
+<div style="display: block; text-align: center;">
+  <a [routerLink]="['/dashboard/admin', { outlets: { 'sidemenu': ['create-service'] } }]"><button>Add New Payment Service</button></a>
+</div>
+<div *ngIf="paymentService" style="text-align: center; margin-left: 20px; margin-top: 20px; font-style: 18px;">
+  <label style="font-weight: bolder;">Name</label>
   <p>{{paymentService.name}}</p>
-  <label>Url</label>
+  <label style="font-weight: bolder;">Url</label>
   <p>{{paymentService.url}}</p>
-  <label>Description</label>
+  <label style="font-weight: bolder;">Description</label>
   <p>{{paymentService.description}}</p>
+  <button (click)="close()" style="margin-top: 5px; font-weight: 900; padding: 5px; background-color: white; border: 2px solid black;">CLOSE</button>
+</div>
 </div>

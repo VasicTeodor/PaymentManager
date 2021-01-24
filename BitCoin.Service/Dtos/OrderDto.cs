@@ -17,6 +17,7 @@ namespace BitCoin.Service.Dtos
         public string CancelUrl { get; set; }
         public string SuccessUrl { get; set; }
         public string Token { get; set; }
+        public Guid MerchantId { get; set; }
 
         //public string order_id { get; set; }
         //public double price_amount { get; set; }

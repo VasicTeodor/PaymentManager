@@ -138,7 +138,34 @@ namespace PaymentManager.Api.Controllers
             
             var url = $"http://localhost:4200/paymentoptions?token={token}&orderId={redirectDto.OrderId}";
             Log.Information($"Token created for application {redirectDto.StoreName}");
-            // return RedirectPermanent(url);
+
+            return Ok(new
+            {
+                redirectUrl = url
+            });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("redirecttosubscriptions")]
+        public async Task<IActionResult> RedirectToSubscriptions(SubscriptionRedirectDto redirectDto)
+        {
+            Log.Information($"Application {redirectDto.StoreName} requesting redirect to payment manager app");
+            var store = await _webStoreRepository.GetWebStoreByIdAndName(redirectDto.WebStoreId, redirectDto.StoreName);
+            if (store == null)
+            {
+                return BadRequest("There is no store with received credentials");
+            }
+
+            var token = GenerateJwtTokenForClient(store);
+            if (redirectDto.UserId == Guid.Empty)
+            {
+                redirectDto.UserId = Guid.NewGuid();
+            }
+
+            var url = $"http://localhost:4200/subscriptionoptions?token={token}&webStoreId={redirectDto.WebStoreId}&userId={redirectDto.UserId}";
+            Log.Information($"Token created for application {redirectDto.StoreName}");
+
             return Ok(new
             {
                 redirectUrl = url

@@ -113,7 +113,7 @@ namespace PayPal.Service.Services
             var apiContext = new APIContext(_accessToken)
             {
                 Config = GetPayPalCredentials()
-        };
+            };
 
             PaymentExecution paymentExecution = new PaymentExecution() { payer_id = payerId };
 
