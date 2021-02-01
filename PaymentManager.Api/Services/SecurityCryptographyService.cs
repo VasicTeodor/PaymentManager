@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -56,6 +57,7 @@ namespace PaymentManager.Api.Services
             }
             catch (Exception ex)
             {
+                Trace.WriteLine($"Exception: {ex.Message}");
                 return string.Empty;
             }
         }
@@ -100,6 +102,7 @@ namespace PaymentManager.Api.Services
             }
             catch (Exception ex)
             {
+                Trace.WriteLine($"Exception: {ex.Message}");
                 return string.Empty;
             }
         }

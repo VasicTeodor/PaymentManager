@@ -94,6 +94,8 @@ namespace PaymentManager.Api.Repository
         {
             merchant.MerchantUniqueId = _cryptographyService.EncryptStringAes(merchant.MerchantUniqueId);
             merchant.MerchantPassword = _cryptographyService.EncryptStringAes(merchant.MerchantPassword);
+            var webStore = await _context.WebStores.FirstOrDefaultAsync(ws => ws.Id == merchant.WebStore.Id);
+            merchant.WebStore = webStore;
             await _context.Merchants.AddAsync(merchant);
             return await _context.SaveChangesAsync() > 0;
         }

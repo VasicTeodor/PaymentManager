@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { PaymentOrderDetails } from 'src/app/_models/payment-order-details';
 import { PaymentOrderResponse } from 'src/app/_models/payment-order-response';
 import { UserPaymentService } from 'src/app/_models/user-payment-service';
+import { UserSubscriptionOption } from 'src/app/_models/user-subscription-option';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 
@@ -17,6 +18,18 @@ export class UserService {
   
   getPaymentServices(orderId: string) : Observable<UserPaymentService[]>{
     return this.http.get<UserPaymentService[]>(this.baseUrl + 'api/payment/getpaymentoptionsfororder?orderId=' + orderId);
+  }
+
+  getSubscriptionOptions(webstoreId: string) : Observable<UserSubscriptionOption[]>{
+    return this.http.get<UserSubscriptionOption[]>('https://localhost:5005/paypal/paypal/subscription/get?webStoreId=' + webstoreId);
+  }
+
+  createBillingPlan(billingPlan: any) : Observable<any>{
+    return this.http.post<any>('https://localhost:5005/paypal/paypal/billingplan/create', billingPlan);
+  }
+
+  createSubscription(subscription: any) : Observable<any>{
+    return this.http.post<any>('https://localhost:5005/paypal/paypal/subscription/create', subscription);
   }
 
   getPaymentRequestUrl(orderId: string, serviceUrl: string) : Observable<PaymentOrderResponse>{
@@ -37,5 +50,9 @@ export class UserService {
 
   payPalExecutePayment(payPalExecuteRequest: any, serviceUrl: string | null) {
     return this.http.post<any>(serviceUrl + 'paypal/executepayment', payPalExecuteRequest);
+  }
+
+  bitCoinExecutePayment(cryptoRequest: any, serviceUrl: string) {
+    return this.http.post<any>(serviceUrl + 'bitcoin/create-payment', cryptoRequest);
   }
 }

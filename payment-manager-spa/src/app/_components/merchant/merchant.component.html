@@ -1,3 +1,49 @@
-<p>
-  merchant works!
-</p>
+<section>
+  <h2 style="text-align: center; margin-bottom: 50px;">
+    Please fill in form to continue:
+  </h2>
+  </section>
+  <div class="text-center" *ngIf="showForm">
+  <form [formGroup]="merchantForm" (ngSubmit)="formData()">
+    <div>
+      <hr>
+      <div>
+        <div>
+          <span id="merchantUniqueId">Merchant Unique Id</span>
+        </div>
+        <input type="text" formControlName="merchantUniqueId" aria-label="MerchantUniqueId">
+      </div>
+      <div>
+        <div>
+          <span id="merchantPassword">Merchant Password</span>
+        </div>
+        <input type="password" formControlName="merchantPassword" aria-label="MerchantPassword">
+      </div>
+      <div>
+        <div>
+          <span id="merchantUniqueStoreId">Merchant Unique Store Id</span>
+        </div>
+        <input type="text" formControlName="merchantUniqueStoreId" aria-label="MerchantUniqueStoreId">
+      </div>
+      <div>
+        <div>
+          <span id="webStoreId">Web Store Id</span>
+        </div>
+        <select (change)="changeWebStore($event)" formControlName="webStoreId">
+          <option value="" disabled>Choose web store</option>
+          <option *ngFor="let webStore of webStores" [ngValue]="webStore.id">{{webStore.storeName}}</option>
+       </select>
+      </div>
+      <div *ngIf="showPaymentOptions">
+        <div>
+          <span id="paymentServices">Payment Services:</span>
+        </div>
+        <select multiple formControlName="paymentServices">
+          <option *ngFor="let service of paymentServices" [ngValue]="service.id" (change)="changeSelection($event)">{{service.name}}</option>
+       </select>
+      </div>
+      <button class="submit" type="submit">Submit</button>
+      <hr>
+    </div>
+  </form>
+  </div>

@@ -1,0 +1,49 @@
+<section>
+  <h1 style="text-align: center; margin-top: 0px; font-size: 35px;">
+  ACME Corporation Payment Manager
+  </h1>
+  
+  <h2 style="text-align: center; margin-bottom: 50px;">
+    Please fill in form to continue:
+  </h2>
+</section>
+<div class="text-center">
+  <form [formGroup]="cryptoForm" (ngSubmit)="formData()">
+    <div>
+      <hr>
+      <div>
+        <div>
+          <span id="priceAmount">Amount</span>
+        </div>
+        <input class="money-input" type="number" formControlName="priceAmount" readonly aria-label="PriceAmount" min="0">
+      </div>
+      <div>
+        <div>
+          <span id="priceCurrency">Price Currency</span>
+        </div>
+        <input type="text" formControlName="priceCurrency" aria-label="PriceCurrency">
+      </div>
+      <div>
+        <div>
+          <span id="receiveCurrency">Recieve Currency</span>
+        </div>
+        <input type="text" formControlName="receiveCurrency" aria-label="ReceiveCurrency">
+      </div>
+      <div>
+        <div>
+          <span id="description">Description</span>
+        </div>
+        <input type="text" formControlName="description" aria-label="Description" readonly>
+      </div>
+      <div>
+        <div>
+          <span id="title">Title</span>
+        </div>
+        <input type="text" formControlName="title" aria-label="Title" readonly>
+      </div>
+
+      <button class="submit" type="submit">Submit</button>
+      <hr>
+    </div>
+  </form>
+</div>

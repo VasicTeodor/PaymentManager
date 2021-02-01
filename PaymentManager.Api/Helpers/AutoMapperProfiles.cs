@@ -59,6 +59,38 @@ namespace PaymentManager.Api.Helpers
                     opt => opt.MapFrom(src => src.Url))
                 .ForMember(dest => dest.PaymentManagerUrl,
                     opt => opt.MapFrom<CustomResolverForPaymentManagerUrl>());
+
+            CreateMap<CreatePaymentServiceDto, PaymentService>()
+                .ForPath(dest => dest.Name,
+                    opt => opt.MapFrom(src => src.Name))
+                .ForPath(dest => dest.Description,
+                    opt => opt.MapFrom(src => src.Description))
+                .ForPath(dest => dest.IsPassTrough,
+                    opt => opt.MapFrom(src => src.IsPassTrough))
+                .ForPath(dest => dest.Url,
+                    opt => opt.MapFrom(src => src.Url))
+                .ForPath(dest => dest.Id,
+                    opt => opt.Ignore())
+                .ForPath(dest => dest.TableVersion,
+                    opt => opt.Ignore())
+                .ForPath(dest => dest.WebStores,
+                    opt => opt.Ignore());
+
+            CreateMap<AddMerchantDto, Merchant>()
+                .ForPath(dest => dest.MerchantPassword,
+                    opt => opt.MapFrom(src => src.MerchantPassword))
+                .ForPath(dest => dest.MerchantUniqueId,
+                    opt => opt.MapFrom(src => src.MerchantUniqueId))
+                .ForPath(dest => dest.MerchantUniqueStoreId,
+                    opt => opt.MapFrom(src => src.MerchantUniqueStoreId))
+                .ForPath(dest => dest.Id,
+                    opt => opt.Ignore())
+                .ForPath(dest => dest.TableVersion,
+                    opt => opt.Ignore())
+                .ForPath(dest => dest.PaymentServices,
+                    opt => opt.Ignore())
+                .ForPath(dest => dest.WebStore,
+                    opt => opt.Ignore());
         }
     }
 
