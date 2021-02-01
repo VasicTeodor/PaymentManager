@@ -44,14 +44,16 @@ namespace Bank.Service.Services
                 Id = Guid.NewGuid(),
                 Merchant = merchant.Account,
                 Amount = payment.Amount,
-                OrderId = payment.Id,
+                //OrderId = payment.Id,
+                OrderId = Guid.NewGuid(),
                 Timestamp = DateTime.Now,
             };
 
             TransactionDto transactionDto = new TransactionDto()
             {
                 //videti da li treba otkomentarisati ovo cudo
-                AcquirerOrderId = payment.Id,
+                //AcquirerOrderId = payment.Id,
+                AcquirerOrderId = Guid.NewGuid(),
                 AcquirerTimestamp = DateTime.Now,
                 Amount = payment.Amount,
                 MerchantOrderId = orderId,
@@ -60,8 +62,6 @@ namespace Bank.Service.Services
 
 
             ///kartica se ne nalazi u banci prodavca
-            //var merchantCards = merchant.Account.Cards.ToList();
-            //var searchCard = merchantCards.Find(c => c.Pan.Substring(1,6).Equals(cardDto.Pan.Substring(1, 6)));
             if (card==null)
             {
                 Log.Information($"Payment service genereting request for PCC");
@@ -109,9 +109,23 @@ namespace Bank.Service.Services
                     _unitOfWork.Complete();
                     return transactionDto;
                 }
-                else
+                else if (pccResponse.Status.Equals("FAILED"))
                 {
                     Log.Information($"Payment service failed with PCC");
+                    merchant = _unitOfWork.Clients.Get(payment.Merchant.Id);
+                    merchant.Account.Amount += payment.Amount;
+                    _unitOfWork.Clients.Update(merchant);
+                    payment.Status = pccResponse.Status;
+                    _unitOfWork.Payments.Update(payment);
+                    transaction.Status = "FAILED";
+                    transactionDto.Status = "FAILED";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+                else
+                {
+                    Log.Information($"Payment service error with PCC");
                     transaction.Status = "ERROR";
                     transactionDto.Status = "ERROR";
                     _unitOfWork.Transactions.Add(transaction);
@@ -146,10 +160,17 @@ namespace Bank.Service.Services
 
                 //dodati i proveru datuma kasnije 
                 //var kkkkk = _securityService.DecryptStringAes(card.SecurityCode);
-                if (!card.SecurityCode.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName))
+                var sc = _securityService.DecryptStringAes(card.SecurityCode);
+                DateTime dateCheck = cardDto.ValidTo;
+                bool result = ((card.ValidTo.Value.Month - dateCheck.Month) + 12 * (card.ValidTo.Value.Year - dateCheck.Year)) == 0;
+                //if (!card.SecurityCode.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || !result)
+                if (!sc.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || result)
                 {
                     transaction.Status = "ERROR";
+                    transaction.Payer = payer.Account;
                     transactionDto.Status = "ERROR";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
                     Log.Information($"Payment service transaction error");
                     return transactionDto;
                 }
@@ -158,6 +179,7 @@ namespace Bank.Service.Services
                 if (payer.Account.Amount < payment.Amount)
                 {
                     transaction.Status = "FAILED";
+                    transaction.Payer = payer.Account;
                     transactionDto.Status = "FAILED";
                     Log.Information($"Payment service transaction failed");
                 }
@@ -169,6 +191,7 @@ namespace Bank.Service.Services
                     _unitOfWork.Clients.Update(payer);
                     _unitOfWork.Complete();
                     transaction.Status = "SUCCESS";
+                    transaction.Payer = payer.Account;
                     transactionDto.Status = "SUCCESS";
                     Log.Information($"Payment service transaction success");
                 }

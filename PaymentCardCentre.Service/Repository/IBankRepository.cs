@@ -9,7 +9,8 @@ namespace PaymentCardCentre.Service.Repository
     public interface IBankRepository
     {
         Bank GetBankByPan(string panPart);
-        int AddBankByPan(string pan);
+        Task<int> AddBankByPan(string pan);
         int SaveChanges();
+        Task<int> SaveChangeAsync();
     }
 }

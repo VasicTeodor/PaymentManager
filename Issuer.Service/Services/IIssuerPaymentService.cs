@@ -8,6 +8,6 @@ namespace Issuer.Service.Services
 {
     public interface IIssuerPaymentService
     {
-        ResponseDto IssuerPayment(RequestDto request);
+        ResponseDto IssuerPayment(RequestDto request, string url);
     }
 }

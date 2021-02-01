@@ -23,19 +23,17 @@ namespace Bank.Service.Repositories.Implementations
 
         public Card GetCardByPan(string pan)
         {
-            //var cards = _context.Cards.Include(c => c.Account).ToList();
-            //Card c = new Card();
-            //foreach (var card in cards)
-            //{
-            //    card.Pan = _securityService.DecryptStringAes(card.Pan);
-            //    if (card.Pan.Equals(pan))
-            //    {
-            //        c = card;
-            //        return c;
-            //    }
-            //}
-            //return c;
-            return _context.Cards.Include(x => x.Account).FirstOrDefault(x => x.Pan.Equals(pan));
+            var cards = _context.Cards.Include(c => c.Account).ToList();
+            foreach (var card in cards)
+            {
+                var restPan = _securityService.DecryptStringAes(card.Pan);
+                if (restPan.Equals(pan))
+                {
+                    return card;
+                }
+            }
+            return null;
+            //return _context.Cards.Include(x => x.Account).FirstOrDefault(x => x.Pan.Equals(pan));
         }
     }
 }

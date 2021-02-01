@@ -6,15 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Bank.Service.Services;
 
 namespace Bank.Service.Repositories.Implementations
 {
     public class ClientRepository : Repository<Client, Guid>, IClientRepository
     {
         private readonly BankDbContext _context;
-        public ClientRepository(BankDbContext context) : base(context)
+        private readonly ISecurityService _securityService;
+        public ClientRepository(BankDbContext context, ISecurityService securityService) : base(context)
         {
             this._context = context;
+            this._securityService = securityService;
         }
 
         public Client GetClientWithNavigationProperties(Guid id)
@@ -29,7 +32,19 @@ namespace Bank.Service.Repositories.Implementations
 
         public Client FindByPayerId(string merchantId)
         {
-            return _context.Clients.Include(c => c.Account).FirstOrDefault(x => x.MerchantId.Equals(merchantId));
+            var clients = _context.Clients.Include(c => c.Account).ThenInclude(c=>c.Client).ToList();
+            foreach (var client in clients)
+            {
+                if (client.MerchantId == null)
+                    continue;
+                var restId = _securityService.DecryptStringAes(client.MerchantId);
+                if (restId.Equals(merchantId))
+                {
+                    return client;
+                }
+            }
+            return null;
+            //return _context.Clients.Include(c => c.Account).FirstOrDefault(x => x.MerchantId.Equals(merchantId));
         }
     }
 }

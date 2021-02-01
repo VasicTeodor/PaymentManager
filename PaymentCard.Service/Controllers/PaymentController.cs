@@ -61,7 +61,18 @@ namespace Bank.Service.Controllers
             Log.Information($"Bank service sending Transaction data to PaymentManager to finish transaction");
             var callPaymentManager = await _restClient.PostRequest<RedirectDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
             return Ok(callPaymentManager);
+            //return Ok();
         }
+
+
+        //zavrsiti ako se bude trebalo dodavati nove prodavce
+        [HttpPost]
+        [Route("AddSellerToBankAndPcc")]
+        public async Task<ActionResult> AddSeller()
+        {
+            return Ok();
+        }
+
 
         [HttpPost]
         [Route("IssuerPayment")]

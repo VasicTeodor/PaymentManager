@@ -23,8 +23,8 @@ namespace Bank.Service.Data
             if (!_context.Clients.Any())
             {
                 var clientSeller = new Client() { FirstName = "ClientSeller", LastName = "ClientSeller", MerchantId = "UniqueMerchantId123", MerchantPassword = "UniqueMerchantPassword@123", Id = Guid.NewGuid() };
-                //clientSeller.MerchantId = _securityService.EncryptStringAes("UniqueMerchantId123");
-                //clientSeller.MerchantPassword = _securityService.EncryptStringAes("UniqueMerchantPassword@123");
+                clientSeller.MerchantId = _securityService.EncryptStringAes("UniqueMerchantId123");
+                clientSeller.MerchantPassword = _securityService.EncryptStringAes("UniqueMerchantPassword@123");
                 var clientBuyerSuccess = new Client() { FirstName = "ClientBuyerSuccess", LastName = "ClientBuyerSuccess", Id = Guid.NewGuid() };
                 var clientBuyerFailure = new Client() { Id = Guid.NewGuid(), FirstName = "ClientBuyerFailure", LastName = "ClientBuyerFailure" };
                 var pcc = new Client() { Id = Guid.NewGuid(), FirstName = "Pcc", LastName = "Pcc" };
@@ -46,15 +46,15 @@ namespace Bank.Service.Data
 
                 _context.Accounts.Add(pccAccount);
                 _context.SaveChanges();
-                var cardClientSeller = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Prodavac", Pan= "1111222233334444", SecurityCode= "1234", ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = sellerAccount };
-                //cardClientSeller.Pan = _securityService.EncryptStringAes("1111222233334444");
-                //cardClientSeller.SecurityCode = _securityService.EncryptStringAes("1234");
-                var cardClientBuyerFailure = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Kupac", Pan = "1111222555782698", SecurityCode = "2222", ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = buyerFailureAccount };
-                //cardClientBuyerFailure.Pan = _securityService.EncryptStringAes("1111222555782698");
-                //cardClientBuyerFailure.SecurityCode = _securityService.EncryptStringAes("2222");
-                var cardClientBuyerSuccesss = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Kupac", Pan = "1111222555784698", SecurityCode = "1111", ValidTo = DateTime.UtcNow.Date.AddYears(3), Account = buyerSuccessAccount };
-                //cardClientBuyerSuccesss.Pan = _securityService.EncryptStringAes("1111222555784698");
-                //cardClientBuyerSuccesss.SecurityCode = _securityService.EncryptStringAes("1111");
+                var cardClientSeller = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Prodavac", ValidTo = DateTime.Now.Date.AddYears(3), Account = sellerAccount };
+                cardClientSeller.Pan = _securityService.EncryptStringAes("1111222233334444");
+                cardClientSeller.SecurityCode = _securityService.EncryptStringAes("1234");
+                var cardClientBuyerFailure = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Kupac", ValidTo = DateTime.Now.Date.AddYears(3), Account = buyerFailureAccount };
+                cardClientBuyerFailure.Pan = _securityService.EncryptStringAes("1111222555782698");
+                cardClientBuyerFailure.SecurityCode = _securityService.EncryptStringAes("2222");
+                var cardClientBuyerSuccesss = new Card() { Id = Guid.NewGuid(), HolderName = "Pera Kupac", ValidTo = DateTime.Now.Date.AddYears(3), Account = buyerSuccessAccount };
+                cardClientBuyerSuccesss.Pan = _securityService.EncryptStringAes("1111222555784698");
+                cardClientBuyerSuccesss.SecurityCode = _securityService.EncryptStringAes("1111");
 
                 _context.Cards.Add(cardClientSeller);
                 _context.Cards.Add(cardClientBuyerFailure);

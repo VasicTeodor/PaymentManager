@@ -16,15 +16,20 @@ namespace PaymentCardCentre.Service.Repository
             _context = context;
         }
 
-        public int AddBankByPan(string pan)
+        public async Task<int> AddBankByPan(string pan)
         {
             _context.Banks.Add(new Bank() { Id = Guid.NewGuid(), Pan = pan });
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
         public Bank GetBankByPan(string panPart)
         {
             return _context.Banks.Where(z => z.Pan.Equals(panPart)).FirstOrDefault();
+        }
+
+        public async Task<int> SaveChangeAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public int SaveChanges()

@@ -23,11 +23,11 @@ namespace Issuer.Service.Controllers
             _issuerPaymentService = issuerPaymentService;
         }
 
-        [HttpPost]
-        [Route("IssuerPayment")]
-        public ActionResult<ResponseDto> IssuerPayment(RequestDto issuerRequest)
+        [HttpPost("IssuerPayment/{url}")]
+        //[Route("IssuerPayment")]
+        public ActionResult<ResponseDto> IssuerPayment([FromBody] RequestDto issuerRequest, string url)
         {
-            ResponseDto response = _issuerPaymentService.IssuerPayment(issuerRequest);
+            ResponseDto response = _issuerPaymentService.IssuerPayment(issuerRequest,url);
             return Ok(response);
         }
     }

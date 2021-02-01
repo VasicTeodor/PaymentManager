@@ -54,6 +54,7 @@ namespace Issuer.Service
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IIssuerPaymentService, IssuerPaymentService>();
+            services.AddScoped<ISecurityService, SecurityService>();
             services.AddTransient<Seed>();
         }
 

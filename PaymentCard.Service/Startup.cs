@@ -66,6 +66,7 @@ namespace Bank.Service
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IIssuerPaymentService, IssuerPaymentService>();
+            services.AddScoped<IRegisterSellerService, RegisterSellerService>();
 
             // Register Mapper
             var mappingConfig = new MapperConfiguration(mc =>
@@ -93,7 +94,7 @@ namespace Bank.Service
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseConsul("bank");
+            //app.UseConsul("bank");
             app.UseRouting();
             app.UseCors("CorsPolicy1");
             app.UseEndpoints(endpoints =>

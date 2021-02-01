@@ -12,13 +12,15 @@ namespace Issuer.Service.Services
     public class IssuerPaymentService : IIssuerPaymentService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISecurityService _securityService;
 
-        public IssuerPaymentService(IUnitOfWork unitOfWork)
+        public IssuerPaymentService(IUnitOfWork unitOfWork, ISecurityService securityService)
         {
             _unitOfWork = unitOfWork;
+            _securityService = securityService;
         }
 
-        public ResponseDto IssuerPayment(RequestDto request)
+        public ResponseDto IssuerPayment(RequestDto request, string url)
         {
             ResponseDto response = new ResponseDto();
             Transaction transaction = new Transaction()
@@ -33,19 +35,26 @@ namespace Issuer.Service.Services
             var pccClient = _unitOfWork.Clients.FindByName("Pcc");
             if (pccClient == null)
             {
-                Log.Information($"Issuer Payment service failed to find PCC");
-                response.Status = "FAILED";
-                transaction.Status = "FAILED";
+                Log.Information($"Issuer Payment service error to find PCC");
+                response.Status = "ERROR";
+                transaction.Payer = payer.Account;
+                transaction.Merchant = pccClient.Account;
+                transaction.Status = "ERROR";
                 _unitOfWork.Transactions.Add(transaction);
                 _unitOfWork.Complete();
                 return response;
             }
 
             //if (!_securityService.DecryptStringAes(card.SecurityCode).Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName))
-            if (!card.SecurityCode.Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName))
+            var sc = _securityService.DecryptStringAes(card.SecurityCode);
+            DateTime dateCheck = request.CardData.ValidTo;
+            bool result = ((card.ValidTo.Value.Month - dateCheck.Month) + 12 * (card.ValidTo.Value.Year - dateCheck.Year)) == 0;
+            if (!sc.Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName) || result)
             {
                 transaction.Status = "ERROR";
                 response.Status = "ERROR";
+                transaction.Payer = payer.Account;
+                transaction.Merchant = pccClient.Account;
                 Log.Information($"Issuer payment service transaction error");
                 _unitOfWork.Transactions.Add(transaction);
                 _unitOfWork.Complete();
@@ -59,8 +68,8 @@ namespace Issuer.Service.Services
             {
                 //nema sredstava
                 Log.Information($"Issuer payment service error, not enough amount on card");
-                transaction.Status = "ERROR";
-                response.Status = "ERROR";
+                transaction.Status = "FAILED";
+                response.Status = "FAILED";
                 _unitOfWork.Transactions.Add(transaction);
                 _unitOfWork.Complete();
                 return response;
@@ -74,8 +83,8 @@ namespace Issuer.Service.Services
                 _unitOfWork.Clients.Update(payer);
                 _unitOfWork.Transactions.Add(transaction);
                 _unitOfWork.Complete();
-                response.IssuerOrderId = transaction.OrderId;
-                response.IssuerTimestamp = transaction.Timestamp;
+                response.IssuerOrderId = Guid.NewGuid();
+                response.IssuerTimestamp = DateTime.Now;
                 return response;
             }
         }

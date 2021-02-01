@@ -46,30 +46,71 @@ namespace PaymentCardCentre.Service.Services
                 Log.Information($"PCC Payment request failed, no bank found");
                 transaction.Status = "ERROR";
                 response.Status = "ERROR";
+                unitOfWork.Transactions.AddTransaction(transaction);
                 unitOfWork.Complete();
                 return response;
             }
 
-            var issuerResponseDto = await restClient.PostRequest<ResponseDto>(_issuerUrl, request);
+            var issuerResponseDto = await restClient.PostRequest<ResponseDto>(_issuerUrl + $"/{panPart}", request);
 
             if (issuerResponseDto == null)
             {
                 Log.Information($"PCC payment Issuer request failed");
                 transaction.Status = "FAILED";
                 response.Status = "FAILED";
+                unitOfWork.Transactions.AddTransaction(transaction);
+                unitOfWork.Complete();
                 return response;
             }
+            
+            if (issuerResponseDto.Status == "ERROR")
+            {
+                Log.Information($"PCC payment Issuer request error");
+                transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                transaction.Status = "ERROR";
+                unitOfWork.Transactions.AddTransaction(transaction);
+                unitOfWork.Complete();
 
-            Log.Information($"PCC payment Issuer request succeded");
-            transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
-            transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
-            transaction.Status = "SUCCESS";
-            unitOfWork.Transactions.AddTransaction(transaction);
-            unitOfWork.Complete();
+                response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                response.Status = "ERROR";
+            }
+            else if(issuerResponseDto.Status == "SUCCESS")
+            {
+                Log.Information($"PCC payment Issuer request succeded");
+                transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                transaction.Status = "SUCCESS";
+                unitOfWork.Transactions.AddTransaction(transaction);
+                unitOfWork.Complete();
 
-            response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
-            response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
-            response.Status = "SUCCESS";
+                response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                response.Status = "SUCCESS";
+            } else if (issuerResponseDto.Status == "FAILED")
+            {
+                Log.Information($"PCC payment Issuer request failed");
+                transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                transaction.Status = "FAILED";
+                unitOfWork.Transactions.AddTransaction(transaction);
+                unitOfWork.Complete();
+
+                response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+                response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+                response.Status = "FAILED";
+            }
+            //Log.Information($"PCC payment Issuer request succeded");
+            //transaction.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+            //transaction.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+            //transaction.Status = "SUCCESS";
+            //unitOfWork.Transactions.AddTransaction(transaction);
+            //unitOfWork.Complete();
+
+            //response.IssuerOrderId = issuerResponseDto.IssuerOrderId;
+            //response.IssuerTimestamp = issuerResponseDto.IssuerTimestamp;
+            //response.Status = "SUCCESS";
             return response;
         }
     }
