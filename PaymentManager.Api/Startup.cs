@@ -138,8 +138,6 @@ namespace PaymentManager.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaymentManager.Api");
             });
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseCors("CorsPolicy");

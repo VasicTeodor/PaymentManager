@@ -53,8 +53,8 @@ export function getToken() {
     JwtModule.forRoot({
       config: {
          tokenGetter: getToken,
-         allowedDomains: ['localhost:5021'],
-         disallowedRoutes: ['localhost:5021/api/authorization']
+         allowedDomains: ['192.168.0.14:5020'],
+         disallowedRoutes: ['192.168.0.14:5020/api/authorization']
       }
    }),
     BrowserModule,

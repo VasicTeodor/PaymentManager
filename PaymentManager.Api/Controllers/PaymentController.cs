@@ -74,7 +74,7 @@ namespace PaymentManager.Api.Controllers
             Log.Information($"Redirecting user: {result.UrlForRedirection}");
             return Ok(new
             {
-                redirectUrl = result.UrlForRedirection
+                redirectUrl = result.UrlForRedirection + $"?orderId={transactionResultDto.MerchantOrderId}"
             });
         }
 
@@ -136,7 +136,7 @@ namespace PaymentManager.Api.Controllers
                 return BadRequest("There was error saving request");
             }
             
-            var url = $"http://localhost:4200/paymentoptions?token={token}&orderId={redirectDto.OrderId}";
+            var url = $"http://192.168.0.14:4200/paymentoptions?token={token}&orderId={redirectDto.OrderId}";
             Log.Information($"Token created for application {redirectDto.StoreName}");
 
             return Ok(new
@@ -163,7 +163,7 @@ namespace PaymentManager.Api.Controllers
                 redirectDto.UserId = Guid.NewGuid();
             }
 
-            var url = $"http://localhost:4200/subscriptionoptions?token={token}&webStoreId={redirectDto.WebStoreId}&userId={redirectDto.UserId}";
+            var url = $"http://192.168.0.14:4200/subscriptionoptions?token={token}&webStoreId={redirectDto.WebStoreId}&userId={redirectDto.UserId}";
             Log.Information($"Token created for application {redirectDto.StoreName}");
 
             return Ok(new
