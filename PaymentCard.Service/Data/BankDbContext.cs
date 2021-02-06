@@ -19,5 +19,12 @@ namespace Bank.Service.Data
         public DbSet<Client> Clients { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Payment> Payments { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+
+        //    modelBuilder.Entity<Card>().Ignore(x => x.Pan);
+        //}
     }
 }

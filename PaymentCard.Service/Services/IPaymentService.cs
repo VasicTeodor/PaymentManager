@@ -11,6 +11,6 @@ namespace Bank.Service.Services
     public interface IPaymentService
     {
         PaymentRequestResponseDto ValidatePayment(PaymentRequest request);
-        TransactionDto SubmitPayment(CardDto cardDto, Guid orderId);
+        Task<TransactionDto> SubmitPayment(CardDto cardDto, Guid orderId);
     }
 }

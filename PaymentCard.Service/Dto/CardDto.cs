@@ -8,7 +8,7 @@ namespace Bank.Service.Dto
     public class CardDto
     {
         public string Pan { get; set; }
-        public int SecurityCode { get; set; }
+        public string SecurityCode { get; set; }
         public string HolderName { get; set; }
         public DateTime ValidTo { get; set; }
     }

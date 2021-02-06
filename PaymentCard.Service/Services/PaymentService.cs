@@ -15,74 +15,189 @@ namespace Bank.Service.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IGenericRestClient _restClient;
+        private readonly ISecurityService _securityService;
+        private readonly string _pccUrl = "http://localhost:52096/PaymentCardCentre/PersistPayment";
 
-        public PaymentService(IUnitOfWork unitOfWork, IMapper mapper)
+        public PaymentService(IUnitOfWork unitOfWork, IMapper mapper, IGenericRestClient restClient, ISecurityService securityService)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _restClient = restClient;
+            _securityService = securityService;
         }
 
-        public TransactionDto SubmitPayment(CardDto cardDto, Guid orderId)
+        public async Task<TransactionDto> SubmitPayment(CardDto cardDto, Guid orderId)
         {
             var card = _unitOfWork.Cards.GetCardByPan(cardDto.Pan);
             var payment = _unitOfWork.Payments.GetPaymentByOrderId(orderId);
-            var payer = _unitOfWork.Clients.Get(card.Account.Id);
             var merchant = _unitOfWork.Clients.Get(payment.Merchant.Id);
-            if (card == null || payment == null || payer == null || merchant == null)
+            if (payment == null)
             {
                 Log.Information($"Payment service submit payment failed");
                 return null;
             }
 
-            //postavi payera ovde odmah jer je payer u istoj banci kao i mechant kasnije prepraviti
+
             Transaction transaction = new Transaction()
             {
                 Id = Guid.NewGuid(),
                 Merchant = merchant.Account,
-                Payer = payer.Account,
                 Amount = payment.Amount,
-                OrderId = payment.Id,
+                //OrderId = payment.Id,
+                OrderId = Guid.NewGuid(),
                 Timestamp = DateTime.Now,
             };
 
             TransactionDto transactionDto = new TransactionDto()
             {
-                AcquirerOrderId = payer.Id,
+                //videti da li treba otkomentarisati ovo cudo
+                //AcquirerOrderId = payment.Id,
+                AcquirerOrderId = Guid.NewGuid(),
                 AcquirerTimestamp = DateTime.Now,
                 Amount = payment.Amount,
                 MerchantOrderId = orderId,
                 PaymentId = payment.Id
             };
 
-            //dodati i proveru datuma kasnije 
-            if (card.SecurityCode != cardDto.SecurityCode || !card.HolderName.Equals(cardDto.HolderName))
-            {
-                transaction.Status = "ERROR";
-                transactionDto.Status = "ERROR";
-                Log.Information($"Payment service transaction error");
-                return transactionDto;
-            }
 
-            //nema dovoljno sredstava
-            if(payer.Account.Amount < payment.Amount)
+            ///kartica se ne nalazi u banci prodavca
+            if (card==null)
             {
-                transaction.Status = "FAILED";
-                transactionDto.Status = "FAILED";
-                Log.Information($"Payment service transaction failed");
-            } else
+                Log.Information($"Payment service genereting request for PCC");
+                var pccClient = _unitOfWork.Clients.FindByName("Pcc");
+                if (pccClient == null)
+                {
+                    Log.Information($"Payment service failed to generate request for PCC");
+                    transactionDto.Status = "FAILED";
+                    transaction.Status = "FAILED";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+                transaction.Payer = pccClient.Account;
+                var pccRequest = new PccRequestDto()
+                {
+                    Amount = transaction.Amount,
+                    Timestamp = transaction.Timestamp,
+                    CardData = cardDto,
+                    OrderId = transaction.OrderId
+                };
+                var pccResponse = await _restClient.PostRequest<PccResponseDto>(_pccUrl, pccRequest);
+
+                if (pccResponse == null)
+                {
+                    Log.Information($"Payment service unhandled error occured while working with PCC");
+                    transaction.Status = "ERROR";
+                    transactionDto.Status = "ERROR";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+
+                if (pccResponse.Status.Equals("SUCCESS"))
+                {
+                    Log.Information($"Payment service succeded with PCC");
+                    merchant = _unitOfWork.Clients.Get(payment.Merchant.Id);
+                    merchant.Account.Amount += payment.Amount;
+                    _unitOfWork.Clients.Update(merchant);
+                    payment.Status = pccResponse.Status;
+                    _unitOfWork.Payments.Update(payment);
+                    transaction.Status = "SUCCESS";
+                    transactionDto.Status = "SUCCESS";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+                else if (pccResponse.Status.Equals("FAILED"))
+                {
+                    Log.Information($"Payment service failed with PCC");
+                    merchant = _unitOfWork.Clients.Get(payment.Merchant.Id);
+                    merchant.Account.Amount += payment.Amount;
+                    _unitOfWork.Clients.Update(merchant);
+                    payment.Status = pccResponse.Status;
+                    _unitOfWork.Payments.Update(payment);
+                    transaction.Status = "FAILED";
+                    transactionDto.Status = "FAILED";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+                else
+                {
+                    Log.Information($"Payment service error with PCC");
+                    transaction.Status = "ERROR";
+                    transactionDto.Status = "ERROR";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    return transactionDto;
+                }
+            }
+            else
             {
-                merchant.Account.Amount += payment.Amount;
-                payer.Account.Amount -= payment.Amount;
-                _unitOfWork.Clients.Update(merchant);
-                _unitOfWork.Clients.Update(payer);
-                _unitOfWork.Complete();
-                transaction.Status = "SUCCESS";
-                transactionDto.Status = "SUCCESS";
-                Log.Information($"Payment service transaction success");
+                //prodavac i kupac se nalaze u istoj banci
+                //pogledati kasnije da li treba otkomentarisati ovo cudo
+                //postavi payera ovde odmah jer je payer u istoj banci kao i mechant kasnije prepraviti
+                //Transaction transaction = new Transaction()
+                //{
+                //    Id = Guid.NewGuid(),
+                //    Merchant = merchant.Account,
+                //    Payer = payer.Account,
+                //    Amount = payment.Amount,
+                //    OrderId = payment.Id,
+                //    Timestamp = DateTime.Now,
+                //};
+
+                //TransactionDto transactionDto = new TransactionDto()
+                //{
+                //    AcquirerOrderId = payer.Id,
+                //    AcquirerTimestamp = DateTime.Now,
+                //    Amount = payment.Amount,
+                //    MerchantOrderId = orderId,
+                //    PaymentId = payment.Id
+                //};
+                var payer = _unitOfWork.Clients.Get(card.Account.Id);
+
+                //dodati i proveru datuma kasnije 
+                //var kkkkk = _securityService.DecryptStringAes(card.SecurityCode);
+                var sc = _securityService.DecryptStringAes(card.SecurityCode);
+                DateTime dateCheck = cardDto.ValidTo;
+                bool result = ((card.ValidTo.Value.Month - dateCheck.Month) + 12 * (card.ValidTo.Value.Year - dateCheck.Year)) == 0;
+                //if (!card.SecurityCode.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || !result)
+                if (!sc.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || result)
+                {
+                    transaction.Status = "ERROR";
+                    transaction.Payer = payer.Account;
+                    transactionDto.Status = "ERROR";
+                    _unitOfWork.Transactions.Add(transaction);
+                    _unitOfWork.Complete();
+                    Log.Information($"Payment service transaction error");
+                    return transactionDto;
+                }
+
+                //nema dovoljno sredstava
+                if (payer.Account.Amount < payment.Amount)
+                {
+                    transaction.Status = "FAILED";
+                    transaction.Payer = payer.Account;
+                    transactionDto.Status = "FAILED";
+                    Log.Information($"Payment service transaction failed");
+                }
+                else
+                {
+                    merchant.Account.Amount += payment.Amount;
+                    payer.Account.Amount -= payment.Amount;
+                    _unitOfWork.Clients.Update(merchant);
+                    _unitOfWork.Clients.Update(payer);
+                    _unitOfWork.Complete();
+                    transaction.Status = "SUCCESS";
+                    transaction.Payer = payer.Account;
+                    transactionDto.Status = "SUCCESS";
+                    Log.Information($"Payment service transaction success");
+                }
             }
             _unitOfWork.Transactions.Add(transaction);
             _unitOfWork.Complete();
-
             return transactionDto;
         }
 

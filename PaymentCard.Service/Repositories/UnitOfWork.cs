@@ -11,7 +11,7 @@ namespace Bank.Service.Repositories
     {
         private readonly BankDbContext _context;
 
-        public UnitOfWork(BankDbContext context, IClientRepository accounts, ICardRepository cards, IClientRepository clients, ITransactionRepository transactions, IPaymentRepository payments)
+        public UnitOfWork(BankDbContext context, IAccountRepository accounts, ICardRepository cards, IClientRepository clients, ITransactionRepository transactions, IPaymentRepository payments)
         {
             _context = context;
             Accounts = accounts;
@@ -21,7 +21,7 @@ namespace Bank.Service.Repositories
             Payments = payments;
         }
 
-        public IClientRepository Accounts { get; set; }
+        public IAccountRepository Accounts { get; set; }
         public ICardRepository Cards { get; set; }
         public IClientRepository Clients { get; set; }
         public ITransactionRepository Transactions { get; set; }
