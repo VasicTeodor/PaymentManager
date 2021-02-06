@@ -70,7 +70,7 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "PayPal",
                     Description = "PayPal service for handling all paypal transactions.",
-                    Url = @"https://localhost:5005/paypal/",
+                    Url = @"http://192.168.0.14:5006/paypal/",
                     IsPassTrough = false
                 };
 
@@ -80,7 +80,7 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "PaymentCard",
                     Description = "Payment service to handle all your payments with payment cards.",
-                    Url = @"https://localhost:5005/bank/",
+                    Url = @"http://192.168.0.14:5006/bank/",
                     IsPassTrough = true
                 };
 
@@ -90,7 +90,7 @@ namespace PaymentManager.Api.Data
                 {
                     Name = "BitCoin",
                     Description = "Payment service to handle all your crypto currency transactions.",
-                    Url = @"https://localhost:5005/bitcoin/",
+                    Url = @"http://192.168.0.14:5006/bitcoin/",
                     IsPassTrough = false
                 };
 

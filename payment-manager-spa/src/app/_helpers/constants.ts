@@ -3,4 +3,4 @@ export const paginationConstants = {
     pageSize: 10
 };
 
-export const apiUrl = "https://localhost:5021/";
+export const apiUrl = "http://192.168.0.14:5020/";

@@ -15,7 +15,7 @@ namespace Bank.Service.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IGenericRestClient _restClient;
-        private string paymentManagerApiUrl = "https://localhost:5021/api/payment/";
+        private string paymentManagerApiUrl = "http://localhost:5020/api/payment/";
 
         public PaymentController(IPaymentService paymentService, IGenericRestClient restClient)
         {

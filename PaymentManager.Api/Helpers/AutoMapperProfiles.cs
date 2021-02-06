@@ -98,7 +98,7 @@ namespace PaymentManager.Api.Helpers
     {
         public string Resolve(PaymentService source, PaymentServiceDto destination, string member, ResolutionContext context)
         {
-            return source.IsPassTrough ? "https://localhost:5021/api/payment/paybypaymentcard" : null;
+            return source.IsPassTrough ? "http://192.168.0.14:5020/api/payment/paybypaymentcard" : null;
         }
     }
 }
