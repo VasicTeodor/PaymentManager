@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using PublishingCompany.Api.Dtos;
+using PublishingCompany.Api.Repository.Interfaces;
+using PublishingCompany.Api.Services.Interfaces;
 using PublishingCompany.Infrastructure.Interface;
 
 namespace PublishingCompany.Api.Controllers
@@ -16,61 +19,38 @@ namespace PublishingCompany.Api.Controllers
         private readonly IGenericRestClient _restClient;
         private readonly IConfiguration _configuration;
         private readonly string _paymentManagerUrl;
+        private readonly IOrderService _orderService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentController(IGenericRestClient restClient, IConfiguration configuration)
+        public PaymentController(IGenericRestClient restClient, IConfiguration configuration, IUnitOfWork unitOfWork, IOrderService orderService)
         {
             _restClient = restClient;
             _configuration = configuration;
             _paymentManagerUrl = _configuration.GetSection("PaymentManagerUrl").Value;
+            _unitOfWork = unitOfWork;
+            _orderService = orderService;
         }
 
-        [HttpGet]
-        [Route("GetPayPal")]
-        public async Task<IActionResult> GetPayPal()
+        [HttpPost]
+        [Route("create-order")]
+        public async Task<IActionResult> CrateOrder(OrderDto orderDto)
         {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paypal/paypal");
+            var orderId = await _orderService.CreateOrder(orderDto);
+            if (orderId != Guid.Empty && orderId != null)
+            {
+                return Ok(new {orderId});
+            }
+
+            return BadRequest("Error while creating new order");
+        }
+
+        [HttpPost]
+        [Route("complete-order")]
+        public async Task<IActionResult> CompleteOrder(CompleteOrderDto completeOrderDto)
+        {
+            var result = await _orderService.CompleteOrder(completeOrderDto.OrderId, completeOrderDto.OrderStatus);
+
             return Ok(result);
         }
-
-        [HttpGet]
-        [Route("GetPayPalValue")]
-        public async Task<IActionResult> GetPayPalValue(string value)
-        {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paypal/paypal/getbyid?id={value}");
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("GetBitcoin")]
-        public async Task<IActionResult> GetBitcoin()
-        {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}bitcoin/bitcoin");
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("GetBitcoinValue")]
-        public async Task<IActionResult> GetBitcoinValue(string value)
-        {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}bitcoin/bitcoin/getbyid?id={value}");
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("GetPaymentCard")]
-        public async Task<IActionResult> GetPaymentCard()
-        {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paymentcard/paymentCard");
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("GetPaymentCardValue")]
-        public async Task<IActionResult> GetPaymentCardValue(string value)
-        {
-            var result = await _restClient.Get<String>($"{_paymentManagerUrl}paymentcard/paymentCard/getbyid?id={value}");
-            return Ok(result);
-        }
-
     }
 }

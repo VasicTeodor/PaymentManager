@@ -62,8 +62,8 @@ export class PayPalComponent implements OnInit {
       description: this.paypalForm.value.description,
       paymentIntent: this.paypalForm.value.intent,
       paymentMethod: this.paypalForm.value.paymentMethod,
-      successUrl: 'http://localhost:4200/paypalresult',
-      errorUrl: 'http://localhost:4200/paypalfailed',
+      successUrl: 'http://192.168.0.14:4200/paypalresult',
+      errorUrl: 'http://192.168.0.14:4200/paypalfailed',
       orderId: this.orderId
     };
     this.createOrder(paypalRequest);
