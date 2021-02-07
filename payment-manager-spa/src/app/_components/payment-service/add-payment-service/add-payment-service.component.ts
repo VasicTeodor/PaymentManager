@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { WebStore } from 'src/app/_models/web-store';
 import { PaymentServicesService } from 'src/app/_services/payment-services/payment-services.service';
@@ -19,7 +19,7 @@ export class AddPaymentServiceComponent implements OnInit {
     url: new FormControl(''),
     description: new FormControl(''),
     isPassTrough: new FormControl(''),
-    webStoreId: new FormControl(''),
+    webStores: new FormControl('', [Validators.required]),
   });
 
   response: string = '';
@@ -40,7 +40,6 @@ export class AddPaymentServiceComponent implements OnInit {
   ngOnInit() {
     this.webStore.getWebStores(1, 100).subscribe((result: any) => {
       this.webStores = result.items;
-      console.log('WebStores rec: ', result);
       this.showForm = true;
     });
   }
@@ -51,7 +50,7 @@ export class AddPaymentServiceComponent implements OnInit {
       url: this.serviceForm.value.url,
       description: this.serviceForm.value.description,
       isPassTrough: this.serviceForm.value.isPassTrough === 'True' ? true : false,
-      webStoreId: this.serviceForm.value.webStoreId
+      webStores: this.serviceForm.value.webStores
     };
     this.createService(serviceRequest);
   }
@@ -71,6 +70,12 @@ export class AddPaymentServiceComponent implements OnInit {
   }
 
   changeWebStore(e: any){
+    this.serviceForm.patchValue(e.target.value, {
+      onlySelf: true
+    })
+  }
+
+  changeSelection(e: any){
     this.serviceForm.patchValue(e.target.value, {
       onlySelf: true
     })

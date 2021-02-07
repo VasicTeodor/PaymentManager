@@ -3,29 +3,28 @@
     Please fill in form to continue:
   </h2>
   </section>
-  <div class="text-center" *ngIf="showForm">
-  <form [formGroup]="merchantForm" (ngSubmit)="formData()">
-    <div>
-      <hr>
-      <div>
+  <div class="form-container" *ngIf="showForm">
+    <hr>
+  <form [formGroup]="merchantForm" name="merchantForm" id="merchantForm" (ngSubmit)="formData()">
+      <div class="form-field">
         <div>
           <span id="merchantUniqueId">Merchant Unique Id</span>
         </div>
         <input type="text" formControlName="merchantUniqueId" aria-label="MerchantUniqueId">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="merchantPassword">Merchant Password</span>
         </div>
         <input type="password" formControlName="merchantPassword" aria-label="MerchantPassword">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="merchantUniqueStoreId">Merchant Unique Store Id</span>
         </div>
         <input type="text" formControlName="merchantUniqueStoreId" aria-label="MerchantUniqueStoreId">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="webStoreId">Web Store Id</span>
         </div>
@@ -34,7 +33,7 @@
           <option *ngFor="let webStore of webStores" [ngValue]="webStore.id">{{webStore.storeName}}</option>
        </select>
       </div>
-      <div *ngIf="showPaymentOptions">
+      <div class="form-field" *ngIf="showPaymentOptions">
         <div>
           <span id="paymentServices">Payment Services:</span>
         </div>
@@ -42,8 +41,7 @@
           <option *ngFor="let service of paymentServices" [ngValue]="service.id" (change)="changeSelection($event)">{{service.name}}</option>
        </select>
       </div>
-      <button class="submit" type="submit">Submit</button>
-      <hr>
-    </div>
-  </form>
+    </form>
+    <hr>
+    <button class="submit" form="merchantForm" type="submit">Submit</button>
   </div>

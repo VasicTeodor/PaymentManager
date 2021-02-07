@@ -95,4 +95,10 @@ export class CryptoComponent implements OnInit {
       });
     }
   }
+
+  changeCurrency(e: any){
+    this.cryptoForm.patchValue(e.target.value, {
+      onlySelf: true
+    })
+  }
 }

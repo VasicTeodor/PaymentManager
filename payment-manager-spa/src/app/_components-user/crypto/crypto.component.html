@@ -7,43 +7,48 @@
     Please fill in form to continue:
   </h2>
 </section>
-<div class="text-center">
-  <form [formGroup]="cryptoForm" (ngSubmit)="formData()">
-    <div>
-      <hr>
-      <div>
+<div class="form-container">
+  <hr>
+  <form [formGroup]="cryptoForm" name="cryptoForm" id="cryptoForm" (ngSubmit)="formData()">
+      <div class="form-field">
         <div>
           <span id="priceAmount">Amount</span>
         </div>
         <input class="money-input" type="number" formControlName="priceAmount" readonly aria-label="PriceAmount" min="0">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="priceCurrency">Price Currency</span>
         </div>
-        <input type="text" formControlName="priceCurrency" aria-label="PriceCurrency">
+        <select (change)="changeCurrency($event)" formControlName="priceCurrency">
+          <option value="" disabled>Choose one option</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+       </select>
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="receiveCurrency">Recieve Currency</span>
         </div>
-        <input type="text" formControlName="receiveCurrency" aria-label="ReceiveCurrency">
+        <select (change)="changeCurrency($event)" formControlName="receiveCurrency">
+          <option value="" disabled>Choose one option</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+       </select>
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="description">Description</span>
         </div>
-        <input type="text" formControlName="description" aria-label="Description" readonly>
+        <input class="money-input" type="text" formControlName="description" aria-label="Description" readonly>
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="title">Title</span>
         </div>
-        <input type="text" formControlName="title" aria-label="Title" readonly>
+        <input class="money-input" type="text" formControlName="title" aria-label="Title" readonly>
       </div>
-
-      <button class="submit" type="submit">Submit</button>
-      <hr>
-    </div>
-  </form>
-</div>
+    </form>
+    <hr>
+    <button class="submit" form="cryptoForm" type="submit">Submit</button>
+  </div>

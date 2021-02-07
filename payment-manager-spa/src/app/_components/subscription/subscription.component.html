@@ -3,88 +3,84 @@
     Please fill in Subscription form to continue:
   </h2>
 </section>
-<div class="text-center">
-  <form [formGroup]="subscriptionForm" (ngSubmit)="formData()">
-    <div>
-      <hr>
-      <div>
+<div class="form-container">
+  <hr>
+  <form [formGroup]="subscriptionForm" name="subscriptionForm" id="subscriptionForm" (ngSubmit)="formData()">
+      <div class="form-field">
         <div>
           <span id="name">Name</span>
         </div>
         <input type="text" formControlName="name" aria-label="Name">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="description">Description</span>
         </div>
         <input type="text" formControlName="description" aria-label="Description">
       </div>
-      <div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="subscriptionType">Subscription Type</span>
         </div>
         <input type="text" formControlName="subscriptionType" aria-label="SubscriptionType">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="paymentType">Payment Type</span>
         </div>
         <input type="text" formControlName="paymentType" aria-label="PaymentType">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="frequency">Frequency</span>
         </div>
         <input type="text" formControlName="frequency" aria-label="Frequency">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="frequencyInterval">Frequency Interval</span>
         </div>
         <input type="number" formControlName="frequencyInterval" aria-label="FrequencyInterval">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="cycles">Cycles</span>
         </div>
         <input type="number" formControlName="cycles" aria-label="Cycles">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="currency">Currency</span>
         </div>
         <input type="text" formControlName="currency" aria-label="Currency">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="amount">Amount</span>
         </div>
         <input type="number" formControlName="amount" aria-label="Amount" min="0">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="successUrl">Success Url</span>
         </div>
         <input type="text" formControlName="successUrl" aria-label="SuccessUrl">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="failedUrl">Failed Url</span>
         </div>
         <input type="text" formControlName="failedUrl" aria-label="FailedUrl">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="webStoreId">Web Store Id</span>
         </div>
         <input type="text" formControlName="webStoreId" aria-label="WebStoreId">
       </div>
-      <hr>
-      <button type="submit">Submit</button>
-      <hr>
-      </div>
-    </div>
   </form>
+  <hr>
+  <button form="subscriptionForm" type="submit">Submit</button>
+  <hr>
   <button type="button" (click)="createSubscription()" *ngIf="isVisible">Confirm</button>
 </div>

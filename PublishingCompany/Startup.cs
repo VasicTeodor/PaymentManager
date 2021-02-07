@@ -32,7 +32,9 @@ namespace PublishingCompany.Api
             services.AddDbContext<DataContext>(x =>
                 x.UseSqlServer(Configuration.GetConnectionString("DbConnection")));
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddScoped<IRestClient, RestClient>();
             services.AddScoped<IGenericRestClient, GenericRestClient>();
             services.AddScoped<IBookRepository, BookRepository>();

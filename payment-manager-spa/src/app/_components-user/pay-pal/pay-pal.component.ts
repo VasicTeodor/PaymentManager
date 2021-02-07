@@ -103,4 +103,9 @@ export class PayPalComponent implements OnInit {
     window.open(this.confirmUrl, "_self");
   }
 
+  changeCurrency(e: any){
+    this.paypalForm.patchValue(e.target.value, {
+      onlySelf: true
+    })
+  }
 }
