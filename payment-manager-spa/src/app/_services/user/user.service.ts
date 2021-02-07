@@ -21,15 +21,15 @@ export class UserService {
   }
 
   getSubscriptionOptions(webstoreId: string) : Observable<UserSubscriptionOption[]>{
-    return this.http.get<UserSubscriptionOption[]>('https://localhost:5005/paypal/paypal/subscription/get?webStoreId=' + webstoreId);
+    return this.http.get<UserSubscriptionOption[]>('http://192.168.0.14:5006/paypal/paypal/subscription/get?webStoreId=' + webstoreId);
   }
 
   createBillingPlan(billingPlan: any) : Observable<any>{
-    return this.http.post<any>('https://localhost:5005/paypal/paypal/billingplan/create', billingPlan);
+    return this.http.post<any>('http://192.168.0.14:5006/paypal/paypal/billingplan/create', billingPlan);
   }
 
   createSubscription(subscription: any) : Observable<any>{
-    return this.http.post<any>('https://localhost:5005/paypal/paypal/subscription/create', subscription);
+    return this.http.post<any>('http://192.168.0.14:5006/paypal/paypal/subscription/create', subscription);
   }
 
   getPaymentRequestUrl(orderId: string, serviceUrl: string) : Observable<PaymentOrderResponse>{

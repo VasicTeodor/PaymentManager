@@ -22,19 +22,33 @@
         <div>
           <span id="subscriptionType">Subscription Type</span>
         </div>
-        <input type="text" formControlName="subscriptionType" aria-label="SubscriptionType">
+        <select (change)="changeSelection($event)" formControlName="subscriptionType">
+          <option value="" disabled>Choose one option</option>
+          <option value="FIXED">FIXED</option>
+          <option value="INFINITE">INFINITE</option>
+       </select>
       </div>
       <div class="form-field">
         <div>
           <span id="paymentType">Payment Type</span>
         </div>
-        <input type="text" formControlName="paymentType" aria-label="PaymentType">
+        <select (change)="changeSelection($event)" formControlName="paymentType">
+          <option value="" disabled>Choose one option</option>
+          <option value="TRIAL">TRIAL</option>
+          <option value="REGULAR">REGULAR</option>
+       </select>
       </div>
       <div class="form-field">
         <div>
           <span id="frequency">Frequency</span>
         </div>
-        <input type="text" formControlName="frequency" aria-label="Frequency">
+        <select (change)="changeSelection($event)" formControlName="frequency">
+          <option value="" disabled>Choose one option</option>
+          <option value="WEEK">WEEK</option>
+          <option value="DAY">DAY</option>
+          <option value="YEAR">YEAR</option>
+          <option value="MONTH">MONTH</option>
+       </select>
       </div>
       <div class="form-field">
         <div>
@@ -52,7 +66,11 @@
         <div>
           <span id="currency">Currency</span>
         </div>
-        <input type="text" formControlName="currency" aria-label="Currency">
+        <select (change)="changeSelection($event)" formControlName="currency">
+          <option value="" disabled>Choose one option</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+       </select>
       </div>
       <div class="form-field">
         <div>

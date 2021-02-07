@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'src/app/_services/toastr/toastr.service';
 import { UserService } from 'src/app/_services/user/user.service';
 
 @Component({
@@ -33,7 +34,7 @@ export class SubscriptionComponent implements OnInit {
   success: boolean = false;
   statusCode: string | null = null;
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService) { 
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private toast: ToastrService) { 
     this.activatedRoute.params.subscribe(params  => {
      });
   }
@@ -66,14 +67,14 @@ export class SubscriptionComponent implements OnInit {
       this.error = false;
       this.success = true;
       this.billingPlanId = val.id;
-      console.log("POST call successful value returned in body", val);
+      this.toast.successMessage('Billing plan created')
     },
     response => {
       this.isVisible = false;
       this.statusCode = response.status;
       this.error = true;
       this.success = false;
-      console.log("POST call in error", response);
+      this.toast.errorMessage('Failed to create billing plan')
     },
     () => {
       console.log("The POST observable is now completed.");
@@ -91,17 +92,23 @@ export class SubscriptionComponent implements OnInit {
       this.isVisible = true;
       this.error = false;
       this.success = true;
-      console.log("POST call successful value returned in body", val);
+      this.toast.successMessage('Subscription plan confirmed')
     },
     response => {
       this.isVisible = false;
       this.statusCode = response.status;
       this.error = true;
       this.success = false;
-      console.log("POST call in error", response);
+      this.toast.errorMessage('Failed to confirm subscription plan')
     },
     () => {
       console.log("The POST observable is now completed.");
     });
+  }
+
+  changeSelection(e: any){
+    this.subscriptionForm.patchValue(e.target.value, {
+      onlySelf: true
+    })
   }
 }
