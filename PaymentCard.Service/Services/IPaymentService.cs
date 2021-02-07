@@ -12,5 +12,6 @@ namespace Bank.Service.Services
     {
         PaymentRequestResponseDto ValidatePayment(PaymentRequest request);
         Task<TransactionDto> SubmitPayment(CardDto cardDto, Guid orderId);
+        Task<string> RegisterNewClient(MerchantDto merchant);
     }
 }

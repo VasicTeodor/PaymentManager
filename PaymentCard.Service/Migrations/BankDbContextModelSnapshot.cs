@@ -52,8 +52,8 @@ namespace Bank.Service.Migrations
                     b.Property<string>("Pan")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SecurityCode")
-                        .HasColumnType("int");
+                    b.Property<string>("SecurityCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("TableVersion")
                         .IsConcurrencyToken()

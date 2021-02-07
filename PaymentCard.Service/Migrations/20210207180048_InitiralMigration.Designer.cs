@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bank.Service.Migrations
 {
     [DbContext(typeof(BankDbContext))]
-    [Migration("20201221182212_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20210207180048_InitiralMigration")]
+    partial class InitiralMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,8 +54,8 @@ namespace Bank.Service.Migrations
                     b.Property<string>("Pan")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SecurityCode")
-                        .HasColumnType("int");
+                    b.Property<string>("SecurityCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("TableVersion")
                         .IsConcurrencyToken()

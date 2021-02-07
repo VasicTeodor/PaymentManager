@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
   providedIn: "root",
 })
 export class BankService {
-  url: String = "https://localhost:5005/bank";
+  url: String = "http://192.168.0.14:5006/bank";
   //url: String = "http://localhost:10662";
 
   constructor(private http: HttpClient) {}

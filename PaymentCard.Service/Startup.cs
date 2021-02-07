@@ -47,7 +47,8 @@ namespace Bank.Service
 
             services.AddCors(options => {
                 options.AddPolicy("CorsPolicy1",
-                    corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:3000", "http://localhost:52096")
+                    //corsBuilder => corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:4201", "http://localhost:3000", "http://localhost:5080")
+                    corsBuilder => corsBuilder.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowAnyOrigin());

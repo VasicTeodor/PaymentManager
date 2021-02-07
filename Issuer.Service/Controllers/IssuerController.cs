@@ -15,7 +15,7 @@ namespace Issuer.Service.Controllers
     {
         private readonly IIssuerPaymentService _issuerPaymentService;
         //private readonly string _issuerUrl = "http://localhost:55208";
-        private readonly string _pccUrl = "http://localhost:52096/PaymentCardCentre/PersistPayment";
+        private readonly string _pccUrl = "http://localhost:5080/PaymentCardCentre/PersistPayment";
 
 
         public IssuerController(IIssuerPaymentService issuerPaymentService)
