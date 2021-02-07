@@ -13,7 +13,7 @@
     align-items: center;
     justify-content: right;">
       <h1 style="margin-left: 10px;">Payment Manager</h1>
-      <button style="position: absolute; right: 0; margin: 10px; font-size: 20px; font-style: italic; background-color: transparent; border: 1px solid black;">LogOut</button>
+      <button (click)="logout()" style="position: absolute; right: 0; margin: 10px; font-size: 20px; font-style: italic; background-color: transparent; border: 1px solid black;">Logout</button>
     </div>
     <div style="overflow-y: auto; height: calc(100% - 80px);">
       <router-outlet name="sidemenu"></router-outlet>

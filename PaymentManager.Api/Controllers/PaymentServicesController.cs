@@ -50,14 +50,16 @@ namespace PaymentManager.Api.Controllers
             Log.Information("Request to add new payment service");
             var newService = _mapper.Map<PaymentService>(newServiceDto);
             
-            newService.WebStores = new List<WebStorePaymentService>()
+            newService.WebStores = new List<WebStorePaymentService>();
+
+            foreach (var webStore in newServiceDto.WebStores)
             {
-                new WebStorePaymentService()
+                newService.WebStores.Add(new WebStorePaymentService()
                 {
                     PaymentService = newService,
-                    WebStoreId = newServiceDto.WebStoreId
-                }
-            };
+                    WebStoreId = webStore
+                });
+            }
 
             var result = await _repository.AddPaymentService(newService);
             

@@ -57,7 +57,7 @@ namespace PublishingCompany.Api.Controllers
 
         [HttpPost]
         [Route("subscribe-user")]
-        public async Task<IActionResult> SubscribeUser(Guid userId)
+        public async Task<IActionResult> SubscribeUser([FromQuery]Guid userId)
         {
             await _unitOfWork.UserRepository.SetUserSubscription(userId);
             return Ok();

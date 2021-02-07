@@ -7,44 +7,46 @@
     Please fill in form to continue:
   </h2>
 </section>
-<div class="text-center">
-  <form [formGroup]="paypalForm" (ngSubmit)="formData()">
-    <div>
-      <hr>
-      <div>
+<div class="form-container">
+  <hr>
+  <form [formGroup]="paypalForm" name="paypalForm" id="paypalForm" (ngSubmit)="formData()">
+      <div class="form-field">
         <div>
           <span id="amount">Amount</span>
         </div>
         <input class="money-input" type="number" formControlName="amount" readonly aria-label="Amount" min="0">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="currency">Currency</span>
         </div>
-        <input type="text" formControlName="currency" aria-label="Currency">
+        <select (change)="changeCurrency($event)" formControlName="currency">
+          <option value="" disabled>Choose one option</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+       </select>
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="description">Description</span>
         </div>
         <input type="text" formControlName="description" aria-label="Description">
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="intent">Intent</span>
         </div>
-        <input type="text" formControlName="intent" aria-label="Intent" readonly>
+        <input class="money-input" type="text" formControlName="intent" aria-label="Intent" readonly>
       </div>
-      <div>
+      <div class="form-field">
         <div>
           <span id="paymentMethod">Payment method</span>
         </div>
-        <input type="text" formControlName="paymentMethod" aria-label="PaymentMethod" readonly >
+        <input class="money-input" type="text" formControlName="paymentMethod" aria-label="PaymentMethod" readonly >
       </div>
-      <hr>
-      <button type="submit">Submit</button>
-      <hr>
-    </div>
-  </form>
+    </form>
+    <hr>
+    <button type="submit" form="paypalForm">Submit</button>
+    <hr>
   <button type="button" (click)="confirm()" *ngIf="isVisible">Confirm</button>
 </div>

@@ -20,16 +20,12 @@ export class PaymentServiceComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.paymentServices = data.paymentServices.items;
-      console.log(this.paymentServices);
-      console.log(data);
     });
   }
 
   getPaymentService(id: string) {
     this.paymentServicesService.getPaymentService(id).subscribe((service: PaymentService) => {
       this.paymentService = service;
-      console.log(service);
-      this.toastrService.successMessage('Recieved all payment services');
     });
   }
 

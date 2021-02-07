@@ -71,11 +71,13 @@ namespace PayPal.Service.Services
 
         public async Task<Agreement> CreateSubscription(SubscriptionRequestDto subscriptionRequest)
         {
+            var billingPlan = await _unitOfWork.BillingPlanRequests.GetBillingPlanById(subscriptionRequest.billingPlanId);
+
             var agreement = new Agreement()
             {
                 id = Guid.NewGuid().ToString(),
-                name = "Base Agreement",
-                description = "Basic Agreement",
+                name = billingPlan.Name ?? "Base Agreement",
+                description = billingPlan.Description ?? "Basic Agreement",
                 start_date = DateTime.Now.AddDays(1).ToString("O")
             };
 

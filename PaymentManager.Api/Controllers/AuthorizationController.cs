@@ -141,7 +141,7 @@ namespace PaymentManager.Api.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(15),
+                Expires = DateTime.Now.AddMinutes(50),
                 SigningCredentials = creds,
                 Issuer = "paymentmanager",
                 Audience = "http://localhost:4200, http://localhost:3000"
