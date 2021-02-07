@@ -13,7 +13,7 @@ namespace PaymentCardCentre.Service.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IGenericRestClient restClient;
-        private readonly string _issuerUrl = "http://localhost:55208/Issuer/IssuerPayment";
+        private readonly string _issuerUrl = "http://localhost:5060/Issuer/IssuerPayment";
 
         public PCCPayment(IUnitOfWork unitOfWork, IGenericRestClient restClient)
         {

@@ -16,7 +16,7 @@ namespace Bank.Service.Controllers
         private readonly IPaymentService _paymentService;
         private readonly IGenericRestClient _restClient;
         private readonly IIssuerPaymentService _issuerPaymentService;
-        private string paymentManagerApiUrl = "https://localhost:5021/api/payment/";
+        private string paymentManagerApiUrl = "http://192.168.0.14:5020/api/payment/";
 
         public PaymentController(IPaymentService paymentService, IGenericRestClient restClient, IIssuerPaymentService issuerPaymentService)
         {
@@ -57,7 +57,7 @@ namespace Bank.Service.Controllers
         public async Task<ActionResult<TransactionDto>> SubmitPayment(Guid Id,[FromBody] CardDto cardDto)
         {
             Log.Information($"Bank service reveived user payment request from bank");
-            var transportDto = _paymentService.SubmitPayment(cardDto, Id);
+            var transportDto = await _paymentService.SubmitPayment(cardDto, Id);
             Log.Information($"Bank service sending Transaction data to PaymentManager to finish transaction");
             var callPaymentManager = await _restClient.PostRequest<RedirectDto>($"{paymentManagerApiUrl}finishpayment", transportDto);
             return Ok(callPaymentManager);
@@ -80,6 +80,14 @@ namespace Bank.Service.Controllers
         {
             ResponseDto response = _issuerPaymentService.IssuerPayment(issuerRequest);
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("AddSellerToBankAndPcc")]
+        public async Task<ActionResult<string>> AddSeller(MerchantDto merchant)
+        {
+            var merchantRegister = await _paymentService.RegisterNewClient(merchant);
+            return Ok(merchantRegister);
         }
     }
 }

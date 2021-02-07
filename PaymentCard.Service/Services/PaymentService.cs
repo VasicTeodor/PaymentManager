@@ -17,7 +17,7 @@ namespace Bank.Service.Services
         private readonly IMapper _mapper;
         private readonly IGenericRestClient _restClient;
         private readonly ISecurityService _securityService;
-        private readonly string _pccUrl = "http://localhost:52096/PaymentCardCentre/PersistPayment";
+        private readonly string _pccUrl = "http://192.168.0.14:5080/PaymentCardCentre/PersistPayment";
 
         public PaymentService(IUnitOfWork unitOfWork, IMapper mapper, IGenericRestClient restClient, ISecurityService securityService)
         {
@@ -164,7 +164,7 @@ namespace Bank.Service.Services
                 DateTime dateCheck = cardDto.ValidTo;
                 bool result = ((card.ValidTo.Value.Month - dateCheck.Month) + 12 * (card.ValidTo.Value.Year - dateCheck.Year)) == 0;
                 //if (!card.SecurityCode.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || !result)
-                if (!sc.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || result)
+                if (!sc.Equals(cardDto.SecurityCode) || !card.HolderName.Equals(cardDto.HolderName) || !result)
                 {
                     transaction.Status = "ERROR";
                     transaction.Payer = payer.Account;
@@ -218,7 +218,7 @@ namespace Bank.Service.Services
                 SuccessUrl = request.SuccessUrl,
                 ErrorUrl = request.ErrorUrl,
                 FailedUrl = request.FailedUrl,
-                Url = "http://localhost:4201/"
+                Url = "http://192.168.0.14:4201/webpack-dev-server/"
             };
             try
             {
@@ -233,16 +233,43 @@ namespace Bank.Service.Services
             if (merchant != null)
             {
                 Log.Information($"Bank service succesfully generated payment response returning payment Url and Id to Payment manager");
-                responseDto.PaymentUrl = "http://localhost:4201/" + request.MerchantOrderId;
+                responseDto.PaymentUrl = "http://192.168.0.14:4201/" + request.MerchantOrderId;
                 responseDto.PaymentId = payment.Id;
             }
             else
             {
                 Log.Information($"Bank service failed to generate payment response returning payment Url and Id to Payment manager");
-                responseDto.PaymentUrl = "http://localhost:4201/";
+                responseDto.PaymentUrl = "http://192.168.0.14:4201/";
                 responseDto.PaymentId = Guid.Empty;
             }
             return responseDto;
+        }
+
+        public async Task<string> RegisterNewClient(MerchantDto merchant)
+        {
+            try
+            {
+                Client client = new Client() { Id = Guid.NewGuid(), FirstName = merchant.FirstName, LastName = merchant.LastName };
+                client.MerchantId = _securityService.EncryptStringAes(merchant.MerchantId);
+                client.MerchantPassword = _securityService.EncryptStringAes(merchant.MerchantPassword);
+                _unitOfWork.Clients.Add(client);
+                _unitOfWork.Complete();
+                var clientAccount = new Account() { Id = Guid.NewGuid(), Amount = merchant.Amount, Client = client };
+                _unitOfWork.Accounts.Add(clientAccount);
+                _unitOfWork.Complete();
+                var cardClient = new Card() { Id = Guid.NewGuid(), HolderName = $"{client.FirstName} {client.LastName}", ValidTo = merchant.ValidTo, Account = clientAccount };
+                cardClient.Pan = _securityService.EncryptStringAes(merchant.Pan);
+                cardClient.SecurityCode = _securityService.EncryptStringAes(merchant.SecurityCode);
+                _unitOfWork.Cards.Add(cardClient);
+                _unitOfWork.Complete();
+                //RegisterBank
+                var response = await _restClient.PostRequest<BankRegisterResponseDto>($"http://192.168.0.14:5080/PaymentCardCentre/RegisterBank", new BankRegisterRequestDto() { BankPanUrl = merchant.Pan.Substring(1, 6) });
+                return response.Status;
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
         }
     }
 }

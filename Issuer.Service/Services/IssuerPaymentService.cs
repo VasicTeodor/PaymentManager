@@ -49,7 +49,7 @@ namespace Issuer.Service.Services
             var sc = _securityService.DecryptStringAes(card.SecurityCode);
             DateTime dateCheck = request.CardData.ValidTo;
             bool result = ((card.ValidTo.Value.Month - dateCheck.Month) + 12 * (card.ValidTo.Value.Year - dateCheck.Year)) == 0;
-            if (!sc.Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName) || result)
+            if (!sc.Equals(request.CardData.SecurityCode) || !card.HolderName.Equals(request.CardData.HolderName) || !result)
             {
                 transaction.Status = "ERROR";
                 response.Status = "ERROR";

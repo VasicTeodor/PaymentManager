@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Bank.Service.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitiralMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,7 +48,7 @@ namespace Bank.Service.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Pan = table.Column<string>(nullable: true),
-                    SecurityCode = table.Column<int>(nullable: false),
+                    SecurityCode = table.Column<string>(nullable: true),
                     HolderName = table.Column<string>(nullable: true),
                     ValidTo = table.Column<DateTime>(nullable: true),
                     AccountId = table.Column<Guid>(nullable: true),
