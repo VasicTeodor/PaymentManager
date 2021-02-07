@@ -263,7 +263,7 @@ namespace Bank.Service.Services
                 _unitOfWork.Cards.Add(cardClient);
                 _unitOfWork.Complete();
                 //RegisterBank
-                var response = await _restClient.PostRequest<BankRegisterResponseDto>($"http://localhost:52096/PaymentCardCentre/RegisterBank", new BankRegisterRequestDto() { BankPanUrl = merchant.Pan.Substring(1, 6) });
+                var response = await _restClient.PostRequest<BankRegisterResponseDto>($"http://192.168.0.14:5080/PaymentCardCentre/RegisterBank", new BankRegisterRequestDto() { BankPanUrl = merchant.Pan.Substring(1, 6) });
                 return response.Status;
             }
             catch (Exception e)
